@@ -158,19 +158,16 @@ impl AmuletSetup {
         };
         for a_type in AmuletTypes::iter() {
             let a_type_count = amulets_to_remove.iter().filter(|a| **a == a_type).count();
-            if a_type_count > 0 {
-                match a_type {
-                    AmuletTypes::Level01 => self.level_1 = a_type_count,
-                    AmuletTypes::Level04 => self.level_4 = a_type_count,
-                    AmuletTypes::Level06 => self.level_6 = a_type_count,
-                    AmuletTypes::Level08 => self.level_8 = a_type_count,
-                    AmuletTypes::Level10 => self.level_10 = a_type_count,
-                    AmuletTypes::Level12 => self.level_12 = a_type_count,
-                    AmuletTypes::Level16 => self.level_16 = a_type_count,
-                    AmuletTypes::Level20 => self.level_20 = a_type_count,
-                }
+            match a_type {
+                AmuletTypes::Level01 => self.level_1 = a_type_count,
+                AmuletTypes::Level04 => self.level_4 = a_type_count,
+                AmuletTypes::Level06 => self.level_6 = a_type_count,
+                AmuletTypes::Level08 => self.level_8 = a_type_count,
+                AmuletTypes::Level10 => self.level_10 = a_type_count,
+                AmuletTypes::Level12 => self.level_12 = a_type_count,
+                AmuletTypes::Level16 => self.level_16 = a_type_count,
+                AmuletTypes::Level20 => self.level_20 = a_type_count,
             }
         }
     }
 }
-
