@@ -62,13 +62,13 @@ pub fn get_configuration() -> Result<Settings> {
         Ok(environment) => environment,
         Err(e) => return Err(anyhow!("Failed to parse APP_ENVIRONMENT: {}", e)),
     };
-    let environment_filename = format!("{}.yaml", environment.as_str());
+    let environment_filename = format!("{}.toml", environment.as_str());
 
     // Initialise our configuration reader
     let settings = config::Config::builder()
-        // Add configuration values from a file named 'configuration.yaml'
+        // Add configuration values from a file named 'configuration.toml'
         .add_source(config::File::from(
-            configuration_directory.join("base.yaml"),
+            configuration_directory.join("base.toml"),
         ))
         .add_source(config::File::from(
             configuration_directory.join(environment_filename),

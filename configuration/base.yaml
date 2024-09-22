@@ -1,3 +1,0 @@
-#! configuration/base.yaml
-application:
-  port: 8001
