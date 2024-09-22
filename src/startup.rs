@@ -3,6 +3,7 @@
 use crate::configuration::Settings;
 use crate::routes::{four_player, home, three_player, two_player};
 use actix_web::{dev::Server, web, App, HttpServer};
+use actix_files::Files;
 use anyhow::{Context, Result};
 use std::net::TcpListener;
 use tracing_actix_web::TracingLogger;
@@ -42,6 +43,7 @@ async fn run(listener: TcpListener) -> Result<Server> {
             .route("/two_player", web::get().to(two_player))
             .route("/three_player", web::get().to(three_player))
             .route("/four_player", web::get().to(four_player))
+            .service(Files::new("/static", "static").show_files_listing())
     })
     .listen(listener)
     .context("Failed to start listening on HttpServer.")?
