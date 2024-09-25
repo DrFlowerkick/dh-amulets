@@ -5,17 +5,19 @@
     <meta http-equiv="content-type" content="text/html; charset=utf-8">
     <title>{% block title %}{{ title }}{% endblock %}</title>
     {% block head %}{% endblock %}
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Titillium+Web:ital,wght@0,200;0,300;0,400;0,600;0,700;0,900;1,200;1,300;1,400;1,600;1,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/styles/styles.css" type="text/css">
   </head>
   <body>
     <header>
-        <h1>DH Amulett Setup</h1>
-        <nav>
-            <ul>
-                <li><a href="/">Home</a></li>
-                <li><a href="/two_player">Zwei Spieler Setup</a></li>
-                <li><a href="/three_player">Drei Spieler Setup</a></li>
-                <li><a href="/four_player">Vier Spieler Setup</a></li>
-            </ul>
+        <h1>Drachenhüter Amulett Setup</h1>
+        <nav class="container">
+          <a href="/">Home</a>
+          <a href="/two_player">Zwei Spieler Setup</a>
+          <a href="/three_player">Drei Spieler Setup</a>
+          <a href="/four_player">Vier Spieler Setup</a>
         </nav>
     </header>
     <main id="content">

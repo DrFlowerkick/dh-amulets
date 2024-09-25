@@ -43,6 +43,8 @@ RUN apt-get update -y \
 COPY --from=builder /app/target/release/dh-amulets dh-amulets
 # We need the configuration file at runtime!
 COPY configuration configuration
+# We need the static files file at runtime!
+COPY static static
 # set environment to production
 ENV APP_ENVIRONMENT production
 # When `docker run` is executed, launch the binary!
