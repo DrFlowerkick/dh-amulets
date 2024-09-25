@@ -2,8 +2,8 @@
 
 use crate::configuration::Settings;
 use crate::routes::{four_player, home, three_player, two_player};
-use actix_web::{dev::Server, web, App, HttpServer};
 use actix_files::Files;
+use actix_web::{dev::Server, web, App, HttpServer};
 use anyhow::{Context, Result};
 use std::net::TcpListener;
 use tracing_actix_web::TracingLogger;
