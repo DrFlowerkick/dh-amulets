@@ -1,12 +1,129 @@
-body {
-    font-family: Arial, sans-serif;
-    background-color: #f1d70f;
+.titillium-web-extralight {
+    font-family: "Titillium Web", sans-serif;
+    font-weight: 200;
+    font-style: normal;
+}
+  
+.titillium-web-light {
+    font-family: "Titillium Web", sans-serif;
+    font-weight: 300;
+    font-style: normal;
+}
+  
+.titillium-web-regular {
+    font-family: "Titillium Web", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+}
+  
+.titillium-web-semibold {
+    font-family: "Titillium Web", sans-serif;
+    font-weight: 600;
+    font-style: normal;
+}
+  
+.titillium-web-bold {
+    font-family: "Titillium Web", sans-serif;
+    font-weight: 700;
+    font-style: normal;
+}
+  
+.titillium-web-black {
+    font-family: "Titillium Web", sans-serif;
+    font-weight: 900;
+    font-style: normal;
+}
+  
+.titillium-web-extralight-italic {
+    font-family: "Titillium Web", sans-serif;
+    font-weight: 200;
+    font-style: italic;
+}
+  
+.titillium-web-light-italic {
+    font-family: "Titillium Web", sans-serif;
+    font-weight: 300;
+    font-style: italic;
+}
+  
+.titillium-web-regular-italic {
+    font-family: "Titillium Web", sans-serif;
+    font-weight: 400;
+    font-style: italic;
+}
+  
+.titillium-web-semibold-italic {
+    font-family: "Titillium Web", sans-serif;
+    font-weight: 600;
+    font-style: italic;
+}
+  
+.titillium-web-bold-italic {
+    font-family: "Titillium Web", sans-serif;
+    font-weight: 700;
+    font-style: italic;
+}
+  
+
+body, html {
+    font-family: "Titillium Web", Arial, sans-serif;
+    background-color: #bdbec1;
+    margin: 2px;
 }
 
-h1 {
-    color: #12089d;
+.container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    grid-auto-rows: auto;
+    gap: 0.625%;
 }
 
-p {
-    color: #555;
+.container > a {
+    text-decoration: none;
+    outline-color: transparent;
+    text-align: center;
+    line-height: 3;
+    color: #bdbec1;
+}
+  
+.container > a:link,
+.container > a:visited,
+.container > a:focus {
+    background: darkred;
+    color: white;
+    border: 1px solid darkred;
+}
+  
+.container > a:hover {
+    background: #bdbec1;
+    color: black;
+    border: 1px solid black;
+}
+  
+.container > a:active {
+    background: #f8eada;
+    color: black;
+    border: 1px solid black;
+}
+
+main > h2,
+main > p {
+    justify-items: center;
+}
+
+.amulet-setup {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    grid-auto-rows: minmax(100px, auto);
+    align-items: center;
+    gap: 20px;
+}
+
+.amulet-setup > p {
+    font-size: xx-large;
+    justify-self: center;
+}
+
+.amulet-setup > p > img {
+    height: 100px;
 }
