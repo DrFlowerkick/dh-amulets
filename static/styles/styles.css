@@ -70,7 +70,7 @@ body, html {
     font-family: "Titillium Web", Arial, sans-serif;
     background-color: #bdbec1;
     margin: 2px;
-    font-size: 1.2em;
+    font-size: 1em;
 }
 
 
@@ -93,12 +93,12 @@ body, html {
     }
     
     .amulet-setup > p {
-        font-size: 3vw;
+        font-size: 4vw;
         justify-self: center;
     }
     
     .amulet-setup > p > img {
-        max-width: 80%;
+        max-width: 70%;
     }
 }
 
