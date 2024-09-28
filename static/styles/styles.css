@@ -63,67 +63,97 @@
     font-weight: 700;
     font-style: italic;
 }
-  
 
+
+/* Standard CSS for all devices */
 body, html {
     font-family: "Titillium Web", Arial, sans-serif;
     background-color: #bdbec1;
     margin: 2px;
+    font-size: 1.2em;
 }
 
-.container {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    grid-auto-rows: auto;
-    gap: 0.625%;
+
+/* For portrait mode */
+@media only screen and (orientation: portrait) {
+    .nav_container {
+        display: grid;
+        grid-template-columns: repeat(1, 1fr);
+        grid-auto-rows: auto;
+        gap: 0.625%;
+    }
+    
+    
+    .amulet-setup {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        grid-auto-rows: auto;
+        align-items: center;
+        gap: 20px;
+    }
+    
+    .amulet-setup > p {
+        font-size: 3vw;
+        justify-self: center;
+    }
+    
+    .amulet-setup > p > img {
+        max-width: 80%;
+    }
 }
 
-.container > a {
+/* For landscape mode */
+@media only screen and (orientation: landscape) {
+    .nav_container {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        grid-auto-rows: auto;
+        gap: 0.625%;
+    }
+    
+    
+    .amulet-setup {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        grid-auto-rows: auto;
+        align-items: center;
+        gap: 20px;
+    }
+    
+    .amulet-setup > p {
+        font-size: 3vw;
+        justify-self: center;
+    }
+    
+    .amulet-setup > p > img {
+        max-width: 80%;
+    }
+}
+
+
+/* Links in navigation should look like buttons */
+.nav_container > a {
     text-decoration: none;
-    outline-color: transparent;
     text-align: center;
     line-height: 3;
-    color: #bdbec1;
 }
   
-.container > a:link,
-.container > a:visited,
-.container > a:focus {
+.nav_container > a:link,
+.nav_container > a:visited,
+.nav_container > a:focus {
     background: darkred;
     color: white;
     border: 1px solid darkred;
 }
   
-.container > a:hover {
+.nav_container > a:hover {
     background: #bdbec1;
     color: black;
     border: 1px solid black;
 }
   
-.container > a:active {
+.nav_container > a:active {
     background: #f8eada;
     color: black;
     border: 1px solid black;
-}
-
-main > h2,
-main > p {
-    justify-items: center;
-}
-
-.amulet-setup {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    grid-auto-rows: minmax(100px, auto);
-    align-items: center;
-    gap: 20px;
-}
-
-.amulet-setup > p {
-    font-size: xx-large;
-    justify-self: center;
-}
-
-.amulet-setup > p > img {
-    height: 100px;
 }
