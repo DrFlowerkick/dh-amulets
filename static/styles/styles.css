@@ -76,6 +76,14 @@ body, html {
 
 /* For portrait mode */
 @media only screen and (orientation: portrait) {
+    h1 {
+        font-size: 1.7rem;
+    }
+
+    h2 {
+        font-size: 1.3rem;
+    }
+
     .nav_container {
         display: grid;
         grid-template-areas:
@@ -105,12 +113,13 @@ body, html {
         grid-template-columns: repeat(2, 1fr);
         grid-auto-rows: auto;
         align-items: center;
-        gap: 0.625%;
+        gap: 0;
     }
     
     .amulet-setup > p {
         font-size: 5vw;
         justify-self: center;
+        margin: 12% auto 0px;
     }
     
     .amulet-setup > p > img {
@@ -124,7 +133,7 @@ body, html {
         display: grid;
         grid-template-columns: repeat(4, 1fr);
         grid-auto-rows: auto;
-        gap: 0.625%;
+        gap: 0.1em;
     }
     
     
@@ -133,12 +142,13 @@ body, html {
         grid-template-columns: repeat(4, 1fr);
         grid-auto-rows: auto;
         align-items: center;
-        gap: 0.625%;
+        gap: 0;
     }
     
     .amulet-setup > p {
         font-size: 3vw;
         justify-self: center;
+        margin: 12% auto 0px;
     }
     
     .amulet-setup > p > img {
