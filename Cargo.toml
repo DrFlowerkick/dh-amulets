@@ -51,7 +51,12 @@ site-root = "target/site"
 site-pkg-dir = "pkg"
 
 # [Optional] The source CSS file. If it ends with .sass or .scss then it will be compiled by dart-sass into CSS. The CSS is optimized by Lightning CSS before being written to <site-root>/<site-pkg>/app.css
-style-file = "style/main.scss"
+#style-file = "style/main.scss"
+# The tailwind input file.
+#
+# Optional, Activates the tailwind build
+tailwind-input-file = "style/input.css"
+
 # Assets source dir. All files found here will be copied and synchronized to site-root.
 # The assets-dir cannot have a sub directory with the same name/path as site-pkg-dir.
 #
@@ -59,15 +64,18 @@ style-file = "style/main.scss"
 assets-dir = "public"
 
 # The IP and port (ex: 127.0.0.1:3000) where the server serves the content. Use it in your server setup.
-site-addr = "127.0.0.1:8001"
+site-addr = "127.0.0.1:3000"
 
 # The port to use for automatic reload monitoring
-reload-port = 8002
+reload-port = 3001
 
 # [Optional] Command to use when running end2end tests. It will run in the end2end dir.
 #   [Windows] for non-WSL use "npx.cmd playwright test"
 #   This binary name can be checked in Powershell with Get-Command npx
-end2end-cmd = "npx playwright test"
+#end2end-cmd = "npx playwright test"
+# using docker image for end2end testing
+end2end-cmd = "./scripts/e2e-docker.sh"
+
 end2end-dir = "end2end"
 
 #  The browserlist query used for optimizing the CSS.

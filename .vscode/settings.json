@@ -1,9 +1,16 @@
 {
     "cSpell.words": [
+        "bindgen",
+        "browserlist",
+        "cdylib",
+        "codegen",
+        "daisyui",
         "fieldset",
         "leptos",
         "leptosfmt",
+        "rlib",
         "rustc",
+        "srcset",
         "stylesheet",
         "tachys",
         "unkeyed"
@@ -38,5 +45,16 @@
         "--stdin",
         "--rustfmt"
     ],
-    "makefile.configureOnOpen": false
+    "css.validate": false,
+    "makefile.configureOnOpen": false,
+    "tailwindCSS.includeLanguages": {
+        "html": "html",
+        "rust": "html"
+    },
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.formatOnSave": true,
+    "[rust]": {
+        "editor.defaultFormatter": "rust-lang.rust-analyzer",
+        "editor.formatOnSave": true
+    }
 }
