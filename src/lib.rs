@@ -1,3 +1,4 @@
+pub mod amulets;
 pub mod app;
 
 #[cfg(feature = "hydrate")]

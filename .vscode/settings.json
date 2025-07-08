@@ -1,60 +1,68 @@
 {
-    "cSpell.words": [
-        "bindgen",
-        "browserlist",
-        "cdylib",
-        "codegen",
-        "daisyui",
-        "fieldset",
-        "leptos",
-        "leptosfmt",
-        "rlib",
-        "rustc",
-        "srcset",
-        "stylesheet",
-        "tachys",
-        "unkeyed"
-    ],
-    "cSpell.ignorePaths": [
-        "package-lock.json",
-        "node_modules",
-        "vscode-extension",
-        ".git/{info,lfs,logs,refs,objects}/**",
-        ".git/{index,*refs,*HEAD}",
-        ".vscode",
-        ".vscode-insiders",
-        "**/*.lock"
-    ],
-    "rust-analyzer.procMacro.ignored": {
-        "leptos_macro": [
-            // optional:
-            // "component",
-            "server"
-        ],
-    },
-    // if code that is cfg-gated for the `ssr` feature is shown as inactive,
-    // you may want to tell rust-analyzer to enable the `ssr` feature by default
-    //
-    // you can also use `rust-analyzer.cargo.allFeatures` to enable all features
-    "rust-analyzer.cargo.features": ["ssr"],
-    
-    // configuration for leptosfmt
-    // run leptosfmt ./**/*.rs in workspace root to format all files
-    "rust-analyzer.rustfmt.overrideCommand": [
-        "leptosfmt",
-        "--stdin",
-        "--rustfmt"
-    ],
-    "css.validate": false,
-    "makefile.configureOnOpen": false,
-    "tailwindCSS.includeLanguages": {
-        "html": "html",
-        "rust": "html"
-    },
-    "editor.defaultFormatter": "esbenp.prettier-vscode",
-    "editor.formatOnSave": true,
-    "[rust]": {
-        "editor.defaultFormatter": "rust-lang.rust-analyzer",
-        "editor.formatOnSave": true
-    }
+  "cSpell.language": "en,de-de",
+  "cSpell.dictionaries": ["en", "de-de"],
+  "cSpell.enabled": true,
+  "cSpell.words": [
+    "axum",
+    "bindgen",
+    "browserlist",
+    "browserquery",
+    "cdylib",
+    "codegen",
+    "daisyui",
+    "fieldset",
+    "getrandom",
+    "Kosmosverlag",
+    "leptos",
+    "leptosfmt",
+    "rlib",
+    "rustc",
+    "srcset",
+    "stylesheet",
+    "tachys",
+    "tokio",
+    "unkeyed"
+  ],
+  "cSpell.ignorePaths": [
+    "package-lock.json",
+    "node_modules",
+    "vscode-extension",
+    ".git/{info,lfs,logs,refs,objects}/**",
+    ".git/{index,*refs,*HEAD}",
+    ".vscode",
+    ".vscode-insiders",
+    "**/*.lock"
+  ],
+  "rust-analyzer.procMacro.ignored": {
+    "leptos_macro": [
+      // optional:
+      // "component",
+      "server"
+    ]
+  },
+  // if code that is cfg-gated for the `ssr` feature is shown as inactive,
+  // you may want to tell rust-analyzer to enable the `ssr` feature by default
+  //
+  // you can also use `rust-analyzer.cargo.allFeatures` to enable all features
+  "rust-analyzer.cargo.features": ["ssr"],
+
+  // configuration for leptosfmt
+  // run leptosfmt ./**/*.rs in workspace root to format all files
+  "rust-analyzer.rustfmt.overrideCommand": [
+    "leptosfmt",
+    "--stdin",
+    "--rustfmt"
+  ],
+  "css.validate": false,
+  "makefile.configureOnOpen": false,
+  "tailwindCSS.includeLanguages": {
+    "html": "html",
+    "rust": "html"
+  },
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.formatOnSave": true,
+  "[rust]": {
+    "editor.defaultFormatter": "rust-lang.rust-analyzer",
+    "editor.formatOnSave": true
+  }
 }
