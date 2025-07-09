@@ -1,5 +1,6 @@
 use crate::amulets::*;
 use leptos::prelude::*;
+use leptos::web_sys;
 use leptos_meta::{MetaTags, Stylesheet, Title, provide_meta_context};
 use leptos_router::{
     StaticSegment,
@@ -12,10 +13,12 @@ use leptos_router::{
 pub fn shell(options: LeptosOptions) -> impl IntoView {
     view! {
         <!DOCTYPE html>
-        <html lang="de">
+        <html lang="de" data-theme="dark">
             <head>
                 <meta charset="utf-8" />
                 <meta name="viewport" content="width=device-width, initial-scale=1" />
+                <Stylesheet id="leptos" href="/pkg/dh-amulets.css" />
+                <link rel="shortcut icon" type="image/ico" href="/favicon.ico" />
                 <AutoReload options=options.clone() />
                 <HydrationScripts options />
                 <MetaTags />
@@ -36,7 +39,7 @@ pub fn App() -> impl IntoView {
         // injects a stylesheet into the document <head>
         // id=leptos means cargo-leptos will hot-reload this stylesheet
         // <Stylesheet id="leptos" href="/pkg/dh-amulets.css"/>
-        <Stylesheet href="/pkg/dh-amulets.css" />
+        // <Stylesheet href="/pkg/dh-amulets.css" />
 
         // sets the document title
         <Title text="Drachenhüter Amulett Setup" />
@@ -44,7 +47,7 @@ pub fn App() -> impl IntoView {
         // content for this welcome page
         <Router>
             <h1>"Drachenhüter Amulett Setup"</h1>
-            <nav>
+            <nav class="navbar bg-primary text-primary-content">
                 <A href="/">"Home"</A>
                 <A href="/setup/2">"Two Player"</A>
                 <A href="/setup/3">"Three Player"</A>
@@ -71,6 +74,13 @@ fn NotFoundView() -> impl IntoView {
 /// Renders the home page of your application.
 #[component]
 fn HomePage() -> impl IntoView {
+    let set_theme = |theme: &str| {
+        let window = web_sys::window().unwrap();
+        let document = window.document().unwrap();
+        let html = document.document_element().unwrap();
+        html.set_attribute("data-theme", theme).unwrap();
+    };
+
     view! {
         <h2>"Willkommen!"</h2>
         <p>
@@ -87,6 +97,52 @@ fn HomePage() -> impl IntoView {
         <p>"Jeder Reload führt zu einem neuen Setup."</p>
         <p>"Fertig."</p>
         <p>"Viel Spaß beim Spielen 😊"</p>
+        <div class="dropdown">
+            <div tabindex="0" role="button" class="btn m-1">
+                Theme wählen
+            </div>
+            <ul
+                tabindex="0"
+                class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52"
+            >
+                <li>
+                    <label
+                        data-theme="light"
+                        class="btn w-full transition duration-200 hover:scale-105"
+                        on:click=move |_| set_theme("light")
+                    >
+                        Light
+                    </label>
+                </li>
+                <li>
+                    <label
+                        data-theme="dark"
+                        class="btn w-full transition duration-200 hover:scale-105"
+                        on:click=move |_| set_theme("dark")
+                    >
+                        Dark
+                    </label>
+                </li>
+                <li>
+                    <label
+                        data-theme="cupcake"
+                        class="btn w-full transition duration-200 hover:scale-105"
+                        on:click=move |_| set_theme("cupcake")
+                    >
+                        Cupcake
+                    </label>
+                </li>
+                <li>
+                    <label
+                        data-theme="cyberpunk"
+                        class="btn w-full transition duration-200 hover:scale-105"
+                        on:click=move |_| set_theme("cyberpunk")
+                    >
+                        Cyberpunk
+                    </label>
+                </li>
+            </ul>
+        </div>
     }
 }
 
@@ -153,7 +209,9 @@ fn SetUp() -> impl IntoView {
                 let setup = setup_data.get().unwrap();
                 view! {
                     <h2>{format!("Setup für {} Spieler", setup.num_players)}</h2>
-                    <button on:click=new_setup>"Neues Setup"</button>
+                    <button class="btn" on:click=new_setup>
+                        "Neues Setup"
+                    </button>
 
                     <div class="amulet-grid">
                         <For
