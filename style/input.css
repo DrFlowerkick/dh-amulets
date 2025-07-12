@@ -1,11 +1,23 @@
-@config "../tailwind.config.js";
-
-@import "tailwindcss/preflight";
-@import "tailwindcss/utilities";
+@import "tailwindcss";
 
 @plugin "daisyui" {
-  base: true;
-  styled: true;
-  utils: true;
-  themes: light, dark --prefersdark --default, cupcake, cyberpunk;
+  themes: fantasy, caramellatte, coffee, business, synthwave --prefersdark, aqua --default;
 }
+
+.my-h2 {
+  @apply text-2xl text-center font-semibold tracking-wide text-secondary mb-4;
+}
+
+.nav-btn {
+  @apply btn text-xl items-center justify-center w-full h-full text-center;
+}
+
+.amulet-grid {
+    @apply grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 place-items-center;
+}
+
+.amulet-cell {
+    @apply flex flex-row items-center space-x-2;
+}
+
+
