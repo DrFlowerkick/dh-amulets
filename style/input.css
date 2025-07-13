@@ -1,7 +1,8 @@
 @import "tailwindcss";
 
 @plugin "daisyui" {
-  themes: fantasy, caramellatte, coffee, business, synthwave --prefersdark, aqua --default;
+  themes: fantasy, caramellatte, coffee, business, synthwave --prefersdark,
+    aqua --default;
 }
 
 .nav-btn {
@@ -9,15 +10,13 @@
 }
 
 .nav-pawn {
-  @apply h-12;
+  @apply h-10;
 }
 
 .amulet-grid {
-    @apply grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 place-items-center;
+  @apply grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 place-items-center;
 }
 
 .amulet-cell {
-    @apply flex flex-row items-center space-x-2;
+  @apply flex flex-row items-center space-x-2;
 }
-
-

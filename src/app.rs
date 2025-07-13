@@ -86,7 +86,7 @@ pub fn PawnIcon() -> impl IntoView {
         <svg
             class="nav-pawn"
             xmlns="http://www.w3.org/2000/svg"
-            viewBox="16 0 32 64"
+            viewBox="16 0 32 50"
             fill="currentColor"
         >
             <circle cx="32" cy="16" r="12" />
@@ -105,7 +105,9 @@ fn NotFoundView() -> impl IntoView {
 #[component]
 fn HomePage() -> impl IntoView {
     view! {
-        <h2 class="text-2xl text-center md:text-left font-semibold tracking-wide text-secondary mb-4">"Willkommen!"</h2>
+        <h2 class="text-2xl text-center md:text-left font-semibold tracking-wide text-secondary mb-4">
+            "Willkommen!"
+        </h2>
         <div class="text-base text-content mb-2 space-y-2">
             <p>
                 "Dies ist ein nichtkommerzielles Fanprojekt für das Setup von "
@@ -154,49 +156,51 @@ pub fn ThemeSelector() -> impl IntoView {
     });
 
     view! {
-        <h2 class="text-2xl text-center md:text-left font-semibold tracking-wide text-secondary mb-4">"Themenauswahl"</h2>
+        <h2 class="text-2xl text-center md:text-left font-semibold tracking-wide text-secondary mb-4">
+            "Themenauswahl"
+        </h2>
         <div class="text-base text-content mb-2 space-y-2">
             <p>
                 "Du kannst verschiedene Themen für "<strong>"Drachenhüter Amulett Setup"</strong>
                 " auswählen. Probiere sie einfach aus."
             </p>
         </div>
-        <div class="dropdown">
-            <div tabindex="0" role="button" class="btn m-1">
-                "Thema wählen (Aktuell: "
-                {move || theme.get()}
-                ")"
-            </div>
-            <ul
-                tabindex="0"
-                class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52"
-            >
-                {ThemeButton(ThemeButtonProps {
-                    theme_name: "fantasy",
-                    set_theme,
-                })}
-                {ThemeButton(ThemeButtonProps {
-                    theme_name: "caramellatte",
-                    set_theme,
-                })}
-                {ThemeButton(ThemeButtonProps {
-                    theme_name: "coffee",
-                    set_theme,
-                })}
-                {ThemeButton(ThemeButtonProps {
-                    theme_name: "business",
-                    set_theme,
-                })}
-                {ThemeButton(ThemeButtonProps {
-                    theme_name: "synthwave",
-                    set_theme,
-                })}
-                {ThemeButton(ThemeButtonProps {
-                    theme_name: "aqua",
-                    set_theme,
-                })}
-            </ul>
-        </div>
+        <button class="btn mx-auto md:mx-0 block" popovertarget="popover-1" style="anchor-name:--anchor-1">
+            "Thema wählen (Aktuell: "
+            {move || theme.get()}
+            ")"
+        </button>
+        <ul
+            class="dropdown menu w-52 rounded-box bg-base-100 shadow-sm"
+            popover
+            id="popover-1"
+            style="position-anchor:--anchor-1"
+        >
+            {ThemeButton(ThemeButtonProps {
+                theme_name: "fantasy",
+                set_theme,
+            })}
+            {ThemeButton(ThemeButtonProps {
+                theme_name: "caramellatte",
+                set_theme,
+            })}
+            {ThemeButton(ThemeButtonProps {
+                theme_name: "coffee",
+                set_theme,
+            })}
+            {ThemeButton(ThemeButtonProps {
+                theme_name: "business",
+                set_theme,
+            })}
+            {ThemeButton(ThemeButtonProps {
+                theme_name: "synthwave",
+                set_theme,
+            })}
+            {ThemeButton(ThemeButtonProps {
+                theme_name: "aqua",
+                set_theme,
+            })}
+        </ul>
     }
 }
 
