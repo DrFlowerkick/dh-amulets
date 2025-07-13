@@ -4,12 +4,12 @@
   themes: fantasy, caramellatte, coffee, business, synthwave --prefersdark, aqua --default;
 }
 
-.my-h2 {
-  @apply text-2xl text-center font-semibold tracking-wide text-secondary mb-4;
+.nav-btn {
+  @apply btn text-2xl items-center justify-center w-full h-full text-center;
 }
 
-.nav-btn {
-  @apply btn text-xl items-center justify-center w-full h-full text-center;
+.nav-pawn {
+  @apply h-12;
 }
 
 .amulet-grid {

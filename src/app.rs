@@ -51,14 +51,20 @@ pub fn App() -> impl IntoView {
                 <A href="/" attr:class="nav-btn">
                     "Home"
                 </A>
-                <A href="/setup/2" attr:class="nav-btn">
-                    "2 Spieler"
+                <A href="/setup/2" attr:class="nav-btn" attr:title="Setup für zwei Spieler">
+                    <PawnIcon />
+                    <PawnIcon />
                 </A>
-                <A href="/setup/3" attr:class="nav-btn">
-                    "3 Spieler"
+                <A href="/setup/3" attr:class="nav-btn" attr:title="Setup für drei Spieler">
+                    <PawnIcon />
+                    <PawnIcon />
+                    <PawnIcon />
                 </A>
-                <A href="/setup/4" attr:class="nav-btn">
-                    "4 Spieler"
+                <A href="/setup/4" attr:class="nav-btn" attr:title="Setup für vier Spieler">
+                    <PawnIcon />
+                    <PawnIcon />
+                    <PawnIcon />
+                    <PawnIcon />
                 </A>
             </nav>
 
@@ -74,6 +80,21 @@ pub fn App() -> impl IntoView {
     }
 }
 
+#[component]
+pub fn PawnIcon() -> impl IntoView {
+    view! {
+        <svg
+            class="nav-pawn"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="16 0 32 64"
+            fill="currentColor"
+        >
+            <circle cx="32" cy="16" r="12" />
+            <path d="M32 30c-9 0-16 7-16 16h32c0-9-7-16-16-16z" />
+        </svg>
+    }
+}
+
 /// Renders not found view
 #[component]
 fn NotFoundView() -> impl IntoView {
@@ -84,7 +105,7 @@ fn NotFoundView() -> impl IntoView {
 #[component]
 fn HomePage() -> impl IntoView {
     view! {
-        <h2 class="my-h2">"Willkommen!"</h2>
+        <h2 class="text-2xl text-center md:text-left font-semibold tracking-wide text-secondary mb-4">"Willkommen!"</h2>
         <div class="text-base text-content mb-2 space-y-2">
             <p>
                 "Dies ist ein nichtkommerzielles Fanprojekt für das Setup von "
@@ -133,7 +154,7 @@ pub fn ThemeSelector() -> impl IntoView {
     });
 
     view! {
-        <h2 class="my-h2">"Themenauswahl"</h2>
+        <h2 class="text-2xl text-center md:text-left font-semibold tracking-wide text-secondary mb-4">"Themenauswahl"</h2>
         <div class="text-base text-content mb-2 space-y-2">
             <p>
                 "Du kannst verschiedene Themen für "<strong>"Drachenhüter Amulett Setup"</strong>
@@ -265,7 +286,7 @@ fn SetUp() -> impl IntoView {
             {move || {
                 let setup = setup_data.get().unwrap();
                 view! {
-                    <h2 class="my-h2">
+                    <h2 class="text-2xl text-center font-semibold tracking-wide text-secondary mb-4">
                         "Setup für "
                         <strong>{setup.num_players.to_string().to_lowercase()}</strong>" Spieler"
                     </h2>
