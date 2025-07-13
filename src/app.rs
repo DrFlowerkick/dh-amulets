@@ -22,6 +22,22 @@ pub fn shell(options: LeptosOptions) -> impl IntoView {
                 <AutoReload options=options.clone() />
                 <HydrationScripts options />
                 <MetaTags />
+                <link rel="manifest" href="/manifest.json" />
+                <script>
+                    "
+                    if ('serviceWorker' in navigator) {
+                        window.addEventListener('load', function () {
+                            navigator.serviceWorker.register('/sw.js')
+                                .then(function (registration) {
+                                    console.log('ServiceWorker registration successful:', registration);
+                                })
+                                .catch(function (err) {
+                                    console.log('ServiceWorker registration failed:', err);
+                                });
+                        });
+                    }
+                    "
+                </script>
             </head>
             <body>
                 <App />
@@ -165,7 +181,11 @@ pub fn ThemeSelector() -> impl IntoView {
                 " auswählen. Probiere sie einfach aus."
             </p>
         </div>
-        <button class="btn mx-auto md:mx-0 block" popovertarget="popover-1" style="anchor-name:--anchor-1">
+        <button
+            class="btn mx-auto md:mx-0 block"
+            popovertarget="popover-1"
+            style="anchor-name:--anchor-1"
+        >
             "Thema wählen (Aktuell: "
             {move || theme.get()}
             ")"
