@@ -161,12 +161,25 @@ pub fn ThemeSelector() -> impl IntoView {
     // Get theme from document if signal is set to None
     Effect::new(move |_| {
         if theme.get().is_none() {
-            if let Some(theme) = web_sys::window()
-                .and_then(|w| w.document())
-                .and_then(|doc| doc.document_element())
-                .and_then(|el| el.get_attribute("data-theme"))
-            {
-                set_theme.set(Some(theme));
+            if let Some(window) = web_sys::window() {
+                if let Ok(Some(local_storage)) = window.local_storage() {
+                    if let Ok(Some(theme_name)) = local_storage.get_item("data-theme") {
+                        if let Some(html) = window.document().and_then(|doc| doc.document_element())
+                        {
+                            html.set_attribute("data-theme", theme_name.as_str())
+                                .unwrap();
+                        }
+                        set_theme.set(Some(theme_name));
+                        return;
+                    }
+                }
+                if let Some(theme_name) = window
+                    .document()
+                    .and_then(|doc| doc.document_element())
+                    .and_then(|el| el.get_attribute("data-theme"))
+                {
+                    set_theme.set(Some(theme_name));
+                }
             }
         }
     });
@@ -235,10 +248,15 @@ pub fn ThemeButton(
                 data-theme=theme_name
                 class="btn w-full transition duration-200 hover:scale-105"
                 on:click=move |_| {
-                    let window = web_sys::window().unwrap();
-                    let document = window.document().unwrap();
-                    let html = document.document_element().unwrap();
-                    html.set_attribute("data-theme", theme_name).unwrap();
+                    if let Some(window) = web_sys::window() {
+                        if let Some(html) = window.document().and_then(|doc| doc.document_element())
+                        {
+                            html.set_attribute("data-theme", theme_name).unwrap();
+                        }
+                        if let Ok(Some(local_storage)) = window.local_storage() {
+                            local_storage.set_item("data-theme", theme_name).unwrap();
+                        }
+                    }
                     set_theme.set(Some(theme_name.to_string()));
                 }
             >

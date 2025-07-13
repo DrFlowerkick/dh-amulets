@@ -17,6 +17,8 @@ tokio = { version = "1", features = ["rt-multi-thread"], optional = true }
 wasm-bindgen = { version = "=0.2.100", optional = true }
 rand = "0.9.1"
 getrandom = { version = "0.3", features = ["wasm_js"] }
+web-sys = { version = "0.3", features = ["Storage", "Window", "Document", "Element"] }
+
 
 [features]
 hydrate = [
