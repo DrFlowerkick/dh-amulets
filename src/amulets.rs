@@ -1,7 +1,7 @@
 // All amulet data types and interactions
 
 use crate::app::ParamNumPlayers;
-use rand::{rng, seq::SliceRandom};
+use rand::{rng, seq::IndexedRandom};
 use std::fmt;
 
 #[derive(Debug, Clone)]
@@ -86,22 +86,19 @@ impl SetupData {
 
     pub fn setup(num_players: NumPlayers) -> Self {
         let mut rng = rng();
-        let mut new_set = AmuletType::full_set();
-        new_set.shuffle(&mut rng);
-        let amulets_to_remove = match num_players {
-            NumPlayers::Two => &new_set[0..16],
-            NumPlayers::Three => &new_set[0..12],
-            NumPlayers::Four => &new_set[0..8],
+        let amulets_to_remove: usize = match num_players {
+            NumPlayers::Two => 16,
+            NumPlayers::Three => 12,
+            NumPlayers::Four => 8,
         };
-        let mut setup = SetupData::new(num_players);
-        for amulet in setup.removals.iter_mut() {
-            let a_type_count = amulets_to_remove
-                .iter()
-                .filter(|a| **a == amulet.amulet_type)
-                .count();
-            amulet.count = a_type_count;
-        }
-        setup
+        AmuletType::full_set()
+            .choose_multiple(&mut rng, amulets_to_remove)
+            .fold(Self::new(num_players), |mut setup, amulet| {
+                #[cfg(test)]
+                assert_eq!(setup.removals[*amulet as usize].amulet_type, *amulet);
+                setup.removals[*amulet as usize].count += 1;
+                setup
+            })
     }
 }
 
@@ -131,7 +128,7 @@ impl AmuletType {
         full_set
     }
 
-    pub fn image_path(&self) -> &'static str {
+    pub const fn image_path(&self) -> &'static str {
         match self {
             AmuletType::Level01 => "/images/amulets/amulet_01.png",
             AmuletType::Level04 => "/images/amulets/amulet_04.png",
@@ -144,7 +141,7 @@ impl AmuletType {
         }
     }
 
-    pub fn alt_text(&self) -> &'static str {
+    pub const fn alt_text(&self) -> &'static str {
         match self {
             AmuletType::Level01 => "Amulet Level 01",
             AmuletType::Level04 => "Amulet Level 04",
@@ -154,6 +151,120 @@ impl AmuletType {
             AmuletType::Level12 => "Amulet Level 12",
             AmuletType::Level16 => "Amulet Level 16",
             AmuletType::Level20 => "Amulet Level 20",
+        }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    const ALL_AMULET_TYPES: [AmuletType; 8] = [
+        AmuletType::Level01,
+        AmuletType::Level04,
+        AmuletType::Level06,
+        AmuletType::Level08,
+        AmuletType::Level10,
+        AmuletType::Level12,
+        AmuletType::Level16,
+        AmuletType::Level20,
+    ];
+
+    impl AmuletType {
+        const fn max_num(&self) -> usize {
+            match self {
+                AmuletType::Level01 => 8,
+                AmuletType::Level04 => 8,
+                AmuletType::Level06 => 5,
+                AmuletType::Level08 => 4,
+                AmuletType::Level10 => 8,
+                AmuletType::Level12 => 4,
+                AmuletType::Level16 => 5,
+                AmuletType::Level20 => 3,
+            }
+        }
+    }
+
+    #[test]
+    fn test_full_set() {
+        let full_set = AmuletType::full_set();
+        for amulet in ALL_AMULET_TYPES {
+            assert_eq!(
+                full_set.iter().filter(|a| **a == amulet).count(),
+                amulet.max_num()
+            );
+        }
+    }
+
+    #[test]
+    fn test_setup_two_player() {
+        let two_player_setup = SetupData::setup(NumPlayers::Two);
+        assert!(matches!(two_player_setup.num_players, NumPlayers::Two));
+        assert_eq!(
+            two_player_setup
+                .removals
+                .iter()
+                .map(|r| r.count)
+                .sum::<usize>(),
+            16
+        );
+        for amulet in ALL_AMULET_TYPES {
+            assert!(
+                two_player_setup
+                    .removals
+                    .iter()
+                    .filter(|r| r.amulet_type == amulet)
+                    .count()
+                    <= amulet.max_num()
+            );
+        }
+    }
+
+    #[test]
+    fn test_setup_three_player() {
+        let two_player_setup = SetupData::setup(NumPlayers::Three);
+        assert!(matches!(two_player_setup.num_players, NumPlayers::Three));
+        assert_eq!(
+            two_player_setup
+                .removals
+                .iter()
+                .map(|r| r.count)
+                .sum::<usize>(),
+            12
+        );
+        for amulet in ALL_AMULET_TYPES {
+            assert!(
+                two_player_setup
+                    .removals
+                    .iter()
+                    .filter(|r| r.amulet_type == amulet)
+                    .count()
+                    <= amulet.max_num()
+            );
+        }
+    }
+
+    #[test]
+    fn test_setup_four_player() {
+        let two_player_setup = SetupData::setup(NumPlayers::Four);
+        assert!(matches!(two_player_setup.num_players, NumPlayers::Four));
+        assert_eq!(
+            two_player_setup
+                .removals
+                .iter()
+                .map(|r| r.count)
+                .sum::<usize>(),
+            8
+        );
+        for amulet in ALL_AMULET_TYPES {
+            assert!(
+                two_player_setup
+                    .removals
+                    .iter()
+                    .filter(|r| r.amulet_type == amulet)
+                    .count()
+                    <= amulet.max_num()
+            );
         }
     }
 }
