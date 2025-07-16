@@ -1,51 +1,60 @@
-# Builder stage
-# We use the latest Rust stable release as base image
-FROM lukemathwalker/cargo-chef:latest-rust-1.78.0 AS chef
-# Let's switch our working directory to `app` (equivalent to `cd app`)
-# The `app` folder will be created for us by Docker in case it does not
-# exist already.
+# ---------- Stage 1: Build ----------
+FROM rust:1.88-bookworm as builder
+
+# Install system dependencies
+RUN apt-get update -y && apt-get install -y --no-install-recommends \
+  clang \
+  npm \
+  wget \
+  ca-certificates \
+  && apt-get clean -y && rm -rf /var/lib/apt/lists/*
+
+# Install cargo-binstall (schneller als cargo install)
+RUN wget https://github.com/cargo-bins/cargo-binstall/releases/latest/download/cargo-binstall-x86_64-unknown-linux-musl.tgz \
+  && tar -xvf cargo-binstall-x86_64-unknown-linux-musl.tgz \
+  && mv cargo-binstall /usr/local/cargo/bin/
+
+# Install cargo-leptos
+RUN cargo binstall cargo-leptos --no-confirm
+
+# Add the WASM target
+RUN rustup target add wasm32-unknown-unknown
+
+# Set up workdir and copy source
 WORKDIR /app
-# Install the required system dependencies for our linking configuration
-RUN apt update && apt install lld clang -y
-
-FROM chef as planner
-# Copy all files from our working environment to our Docker image
-COPY . .
-# Compute a lock-like file for our project
-RUN cargo chef prepare --recipe-path recipe.json
-
-FROM chef as builder
-COPY --from=planner /app/recipe.json recipe.json
-# Build our project dependencies, not our application!
-RUN cargo chef cook --release --recipe-path recipe.json
-# Up to this point, if our dependenciy tree stays the same,
-# all layers should be cached
 COPY . .
 
-# Let's build our binary!
-# We'll use the release profile to make it faaaast
-RUN cargo build --release --bin dh-amulets
+# Install frontend dependencies (for Tailwind, daisyUI, etc.)
+# Assumes package.json/package-lock.json in project root
+RUN npm ci
 
-# Runtime stage
-FROM debian:bookworm-slim AS runtime
-# set workdir again
+# Build the Leptos app (WASM + SSR) in release mode
+RUN cargo leptos build --release
+
+# ---------- Stage 2: Runtime ----------
+FROM debian:bookworm-slim as runtime
+
+# Install runtime dependencies (for OpenSSL etc.)
+RUN apt-get update -y && apt-get install -y --no-install-recommends \
+  openssl ca-certificates \
+  && apt-get autoremove -y && apt-get clean -y && rm -rf /var/lib/apt/lists/*
+
+# Set working directory
 WORKDIR /app
-# Install OpenSSL - it is dynamically linked by some of our dependencies
-# Install ca-certificates - it is needed to verify TLS certificates
-# when establishing HTTPS connections
-RUN apt-get update -y \
-    && apt-get install -y --no-install-recommends openssl ca-certificates \
-    # Clean up
-    && apt-get autoremove -y \
-    && apt-get clean -y \
-    && rm -rf /var/lib/apt/lists/*
-# Copy the compiled binary from builder environment to our runtime environment
-COPY --from=builder /app/target/release/dh-amulets dh-amulets
-# We need the configuration file at runtime!
-COPY configuration configuration
-# We need the static files file at runtime!
-COPY static static
-# set environment to production
-ENV APP_ENVIRONMENT production
-# When `docker run` is executed, launch the binary!
-ENTRYPOINT ["./dh-amulets"]
+
+# Copy runtime files from build container
+COPY --from=builder /app/target/release/dh-amulets /app/
+COPY --from=builder /app/target/site /app/site
+#COPY --from=builder /app/Cargo.toml /app/
+
+# Expose SSR port
+EXPOSE 8080
+
+# Set Leptos runtime environment variables (can be overridden!)
+ENV RUST_LOG="info"
+ENV LEPTOS_SITE_ADDR="0.0.0.0:8080"
+ENV LEPTOS_SITE_ROOT="site"
+ENV LEPTOS_OUTPUT_NAME="dh-amulets"
+
+# Start the Leptos SSR server
+CMD ["/app/dh-amulets"]

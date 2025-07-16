@@ -16,7 +16,7 @@ Cargo.lock
 # MSVC Windows builds of rustc generate these, which store debugging information
 *.pdb
 
-# Node.js – tailwind, daisyui, postcss etc.
+# Node.js – tailwind, daisyui etc.
 node_modules/
 
 # Tailwind CSS build output (if build separately)
