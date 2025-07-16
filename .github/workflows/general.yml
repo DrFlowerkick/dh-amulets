@@ -1,4 +1,4 @@
-name: General Rust for dh-amulets
+name: General Rust CI for dh-amulets
 
 on:
   push:
@@ -8,52 +8,107 @@ on:
 
 env:
   CARGO_TERM_COLOR: always
-  # read the appropriate configuration
-  APP_ENVIRONMENT: "github"
+  ENV: "github"
 
 jobs:
   test:
-    name: Test
+    name: Rust Unit Tests
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
       - uses: dtolnay/rust-toolchain@stable
+
       - uses: Swatinem/rust-cache@v2
-      - name: Run tests
+
+      - name: Run cargo tests
         run: cargo test
 
   fmt:
-    name: Rustfmt
+    name: Rustfmt Check
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
       - uses: dtolnay/rust-toolchain@stable
         with:
           components: rustfmt
-      - name: Enforce formatting
+
+      - name: Check formatting
         run: cargo fmt --check
 
   clippy:
-    name: Clippy
+    name: Clippy Linting
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
       - uses: dtolnay/rust-toolchain@stable
         with:
           components: clippy
+
       - uses: Swatinem/rust-cache@v2
-      - name: Linting
+
+      - name: Run clippy
         run: cargo clippy -- -D warnings
 
   coverage:
-    name: Code coverage
+    name: Code Coverage
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+
       - uses: dtolnay/rust-toolchain@stable
+
       - uses: Swatinem/rust-cache@v2
+
       - name: Install tarpaulin
         run: cargo install cargo-tarpaulin
-      - name: Generate code coverage
+
+      - name: Run tarpaulin
         run: cargo tarpaulin --verbose --workspace
+
+  e2e:
+    name: End-to-End Tests (Playwright)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Add wasm32 target
+        run: rustup target add wasm32-unknown-unknown
+
+      - uses: Swatinem/rust-cache@v2
+
+      - name: Install cargo-leptos
+        run: cargo install cargo-leptos
+
+      - name: Build Leptos app (release)
+        run: cargo leptos build --release
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Install Playwright + deps (locked @ 1.44.1)
+        working-directory: end2end
+        run: |
+          npm ci
+          npx playwright install --with-deps
+
+      - name: Start Leptos server
+        run: cargo leptos serve &
+        shell: bash
+
+      - name: Wait for server to be ready
+        run: npx wait-on http://localhost:3000
+
+      - name: Run Playwright tests
+        working-directory: end2end
+        run: npx playwright test
