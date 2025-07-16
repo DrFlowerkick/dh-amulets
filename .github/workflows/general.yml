@@ -74,7 +74,7 @@ jobs:
     runs-on: ubuntu-22.04
     timeout-minutes: 10
     env:
-      LEPTOS_ENV: github
+      LEPTOS_ENV: PROD
 
     steps:
       - name: 📥 Checkout repository
@@ -112,7 +112,7 @@ jobs:
           npx playwright install --with-deps
 
       - name: 🧪 Run E2E tests via cargo leptos
-        run: cargo leptos end-to-end
+        run: cargo leptos end-to-end --release
 
       - name: 📤 Upload Playwright HTML report (on failure)
         if: failure()

@@ -24,7 +24,7 @@ if [[ "$ENVIRONMENT" == "DEV" ]]; then
     "$IMAGE" \
     bash -c "npx playwright test"
 
-elif [[ "$ENVIRONMENT" == "github" ]]; then
+elif [[ "$ENVIRONMENT" == "PROD" ]]; then
   echo "⚙️  Running Playwright E2E tests directly (CI mode)..."
   echo "🔍 Reporter: HTML, no interactive mode"
 
