@@ -91,11 +91,8 @@ jobs:
 
       - name: 📦 Download prebuilt cargo-leptos binary
         run: |
-          curl -fsSL -o cargo-leptos_v0.8.3.tar.gz https://github.com/leptos-rs/leptos/archive/refs/tags/v0.8.3.tar.gz
-          tar -xzf cargo-leptos_v0.8.3.tar.gz
-          chmod +x cargo-leptos
-          mkdir -p ~/.cargo/bin
-          mv cargo-leptos ~/.cargo/bin/
+          cargo install cargo-binstall
+          cargo binstall cargo-leptos --no-confirm
 
       - name: 📦 Set up Node.js for Playwright
         uses: actions/setup-node@v4
