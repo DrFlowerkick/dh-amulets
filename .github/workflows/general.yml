@@ -89,14 +89,8 @@ jobs:
       - name: 🛠️ Cache Rust dependencies
         uses: Swatinem/rust-cache@v2
 
-      - name: 📦 Download prebuilt cargo-leptos binary
-        run: |
-          curl -fsSL \
-            -o cargo-leptos_v0.8.3.tar.gz \
-            https://github.com/leptos-rs/leptos/releases/download/v0.8.3/cargo-leptos-v0.8.3-x86_64-unknown-linux-gnu.tar.gz
-          tar -xzf cargo-leptos_v0.8.3.tar.gz
-          chmod +x cargo-leptos
-          mv cargo-leptos ~/.cargo/bin/
+      - name: 📦 Install cargo-leptos CLI
+        run: cargo install cargo-leptos 
 
       - name: 📦 Set up Node.js for Playwright
         uses: actions/setup-node@v4
