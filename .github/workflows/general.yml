@@ -90,18 +90,17 @@ jobs:
         uses: Swatinem/rust-cache@v2
 
       - name: 📦 Download prebuilt cargo-leptos binary
-        run: curl -fsSL \
-          -o cargo-leptos_v0.8.3.tar.gz \
-          https://github.com/leptos-rs/leptos/archive/refs/tags/v0.8.3.tar.gz
+        run:
+          curl -fsSL -o cargo-leptos_v0.8.3.tar.gz https://github.com/leptos-rs/leptos/archive/refs/tags/v0.8.3.tar.gz
           tar -xzf cargo-leptos_v0.8.3.tar.gz
           chmod +x cargo-leptos
-          mv cargo-leptos ~/.cargo/bin/ 
+          mv cargo-leptos ~/.cargo/bin/
 
       - name: 📦 Set up Node.js for Playwright
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: 'npm'
+          cache: "npm"
           cache-dependency-path: end2end/package-lock.json
 
       - name: 📦 Install Playwright + browsers
