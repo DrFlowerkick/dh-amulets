@@ -89,17 +89,21 @@ jobs:
       - name: 🛠️ Cache Rust dependencies
         uses: Swatinem/rust-cache@v2
 
-      - name: 📦 Download prebuilt cargo-leptos binary
-        run: |
-          cargo install cargo-binstall
-          cargo binstall cargo-leptos --no-confirm
+      - uses: taiki-e/install-action@v2
+        with:
+          tool: cargo-leptos
 
       - name: 📦 Set up Node.js for Playwright
         uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: "npm"
-          cache-dependency-path: end2end/package-lock.json
+          cache-dependency-path: |
+            package-lock.json
+            end2end/package-lock.json
+      
+      - name: 📦 Install root-level npm dependencies (e.g. Tailwind, daisyui)
+        run: npm ci
 
       - name: 📦 Install Playwright + browsers
         working-directory: end2end
