@@ -19,6 +19,7 @@
     "leptos",
     "leptosfmt",
     "networkidle",
+    "podman",
     "popovertarget",
     "prefersdark",
     "rlib",
