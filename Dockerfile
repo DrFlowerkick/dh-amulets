@@ -1,5 +1,5 @@
 # ---------- Stage 1: Build ----------
-FROM rust:1.88-bookworm as builder
+FROM rust:1.88-bookworm AS builder
 
 # Install system dependencies
 RUN apt-get update -y && apt-get install -y --no-install-recommends \
@@ -9,13 +9,16 @@ RUN apt-get update -y && apt-get install -y --no-install-recommends \
   ca-certificates \
   && apt-get clean -y && rm -rf /var/lib/apt/lists/*
 
-# Install cargo-binstall (schneller als cargo install)
-RUN wget https://github.com/cargo-bins/cargo-binstall/releases/latest/download/cargo-binstall-x86_64-unknown-linux-musl.tgz \
-  && tar -xvf cargo-binstall-x86_64-unknown-linux-musl.tgz \
-  && mv cargo-binstall /usr/local/cargo/bin/
+ENV CARGO_TERM_COLOR=always
+
+# Install cargo-binstall, which makes it easier to install other
+# cargo extensions like cargo-leptos
+RUN wget https://github.com/cargo-bins/cargo-binstall/releases/latest/download/cargo-binstall-x86_64-unknown-linux-musl.tgz
+RUN tar -xvf cargo-binstall-x86_64-unknown-linux-musl.tgz
+RUN cp cargo-binstall /usr/local/cargo/bin
 
 # Install cargo-leptos
-RUN cargo binstall cargo-leptos --no-confirm
+RUN cargo binstall cargo-leptos -y
 
 # Add the WASM target
 RUN rustup target add wasm32-unknown-unknown
@@ -32,7 +35,7 @@ RUN npm ci
 RUN cargo leptos build --release
 
 # ---------- Stage 2: Runtime ----------
-FROM debian:bookworm-slim as runtime
+FROM debian:bookworm-slim AS runtime
 
 # Install runtime dependencies (for OpenSSL etc.)
 RUN apt-get update -y && apt-get install -y --no-install-recommends \

@@ -2,7 +2,7 @@ version: "3.9"
 
 services:
   dh-amulets:
-    image: ghcr.io/DrFlowerkick/dh-amulets:latest
+    image: ghcr.io/drflowerkick/dh-amulets:latest
     container_name: dh-amulets
     restart: unless-stopped
     ports:
