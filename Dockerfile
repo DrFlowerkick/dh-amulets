@@ -47,14 +47,15 @@ COPY --from=builder /app/target/release/dh-amulets /app/
 COPY --from=builder /app/target/site /app/site
 #COPY --from=builder /app/Cargo.toml /app/
 
-# Expose SSR port
-EXPOSE 8080
-
 # Set Leptos runtime environment variables (can be overridden!)
 ENV RUST_LOG="info"
+ENV LEPTOS_ENV="PROD"
 ENV LEPTOS_SITE_ADDR="0.0.0.0:8080"
 ENV LEPTOS_SITE_ROOT="site"
 ENV LEPTOS_OUTPUT_NAME="dh-amulets"
+
+# Expose SSR port
+EXPOSE 8080
 
 # Start the Leptos SSR server
 CMD ["/app/dh-amulets"]
