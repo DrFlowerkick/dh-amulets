@@ -112,7 +112,9 @@ jobs:
           npx playwright install --with-deps
 
       - name: 🧪 Run E2E tests via cargo leptos
-        run: cargo leptos end-to-end --release
+        run: |
+          export GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
+          cargo leptos end-to-end --release
 
       - name: 📤 Upload Playwright HTML report (on failure)
         if: failure()
