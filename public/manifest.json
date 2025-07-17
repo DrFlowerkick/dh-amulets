@@ -1,0 +1,45 @@
+{
+  "name": "Drachenhüter Amulett Setup",
+  "short_name": "Drachenhüter",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#222222",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "/icon-512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "screenshots": [
+    {
+        "src": "/Screenshot_DH_20250713_Home.png",
+        "sizes": "800x600",
+        "type": "image/png",
+        "form_factor": "wide"
+    },
+    {
+        "src": "/Screenshot_DH_20250713_Three_Player.png",
+        "sizes": "800x600",
+        "type": "image/png",
+        "form_factor": "wide"
+    },
+    {
+        "src": "/Screenshot_DH_20250713_Home_Mobil.png",
+        "sizes": "412x915",
+        "type": "image/png"
+    },
+    {
+        "src": "/Screenshot_DH_20250713_Three_Player_Mobil.png",
+        "sizes": "412x915",
+        "type": "image/png",
+        "form_factor": "narrow"
+    }
+  ]
+}
