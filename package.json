@@ -1,0 +1,29 @@
+{
+  "name": "dh-amulets",
+  "version": "1.0.0",
+  "description": "<!-- markdownlint-disable MD033 --> <picture>     <source srcset=\"https://raw.githubusercontent.com/leptos-rs/leptos/main/docs/logos/Leptos_logo_Solid_White.svg\" media=\"(prefers-color-scheme: dark)\">     <img src=\"https://raw.githubusercontent.com/leptos-rs/leptos/main/docs/logos/Leptos_logo_RGB.svg\" alt=\"Leptos Logo\"> </picture> <!-- markdownlint-enable MD033 -->",
+  "main": "postcss.config.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DrFlowerkick/dh-amulets.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/DrFlowerkick/dh-amulets/issues"
+  },
+  "homepage": "https://github.com/DrFlowerkick/dh-amulets#readme",
+  "devDependencies": {
+    "@tailwindcss/cli": "^4.1.11",
+    "daisyui": "^5.0.46",
+    "tailwindcss": "^4.1.11"
+  }
+}

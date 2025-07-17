@@ -1,0 +1,90 @@
+{
+  "cSpell.language": "en,de-de",
+  "cSpell.dictionaries": ["en", "de-de"],
+  "cSpell.enabled": true,
+  "cSpell.words": [
+    "aquasecurity",
+    "autoremove",
+    "axum",
+    "bindgen",
+    "binstall",
+    "browserlist",
+    "browserquery",
+    "buildx",
+    "Buildx",
+    "caramellatte",
+    "cdylib",
+    "codegen",
+    "daisyui",
+    "debian",
+    "dtolnay",
+    "fieldset",
+    "getrandom",
+    "github",
+    "Kosmosverlag",
+    "leptos",
+    "leptosfmt",
+    "linux",
+    "LOGLEVEL",
+    "networkidle",
+    "openssl",
+    "podman",
+    "popovertarget",
+    "prefersdark",
+    "rlib",
+    "rustc",
+    "srcset",
+    "stylesheet",
+    "Swatinem",
+    "synthwave",
+    "tabindex",
+    "tachys",
+    "taiki",
+    "tailwindcss",
+    "tokio",
+    "unkeyed",
+    "workdir"
+  ],
+  "cSpell.ignorePaths": [
+    "package-lock.json",
+    "node_modules",
+    "vscode-extension",
+    ".git/{info,lfs,logs,refs,objects}/**",
+    ".git/{index,*refs,*HEAD}",
+    ".vscode",
+    ".vscode-insiders",
+    "**/*.lock"
+  ],
+  "rust-analyzer.procMacro.ignored": {
+    "leptos_macro": [
+      // optional:
+      // "component",
+      "server"
+    ]
+  },
+  // if code that is cfg-gated for the `ssr` feature is shown as inactive,
+  // you may want to tell rust-analyzer to enable the `ssr` feature by default
+  //
+  // you can also use `rust-analyzer.cargo.allFeatures` to enable all features
+  "rust-analyzer.cargo.features": ["ssr"],
+
+  // configuration for leptosfmt
+  // run leptosfmt ./**/*.rs in workspace root to format all files
+  "rust-analyzer.rustfmt.overrideCommand": [
+    "leptosfmt",
+    "--stdin",
+    "--rustfmt"
+  ],
+  "css.validate": false,
+  "makefile.configureOnOpen": false,
+  "tailwindCSS.includeLanguages": {
+    "html": "html",
+    "rust": "html"
+  },
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.formatOnSave": true,
+  "[rust]": {
+    "editor.defaultFormatter": "rust-lang.rust-analyzer",
+    "editor.formatOnSave": true
+  }
+}

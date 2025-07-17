@@ -1,0 +1,22 @@
+@import "tailwindcss";
+
+@plugin "daisyui" {
+  themes: fantasy, caramellatte, coffee, business, synthwave --prefersdark,
+    aqua --default;
+}
+
+.nav-btn {
+  @apply btn text-2xl items-center justify-center w-full h-full text-center;
+}
+
+.nav-pawn {
+  @apply h-10;
+}
+
+.amulet-grid {
+  @apply grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 place-items-center;
+}
+
+.amulet-cell {
+  @apply flex flex-row items-center space-x-2;
+}
