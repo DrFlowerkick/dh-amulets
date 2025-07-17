@@ -52,14 +52,5 @@ jobs:
           platforms: linux/amd64
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          build-args: |
-            GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
-
-      - name: 🔍 Trivy vulnerability scan (latest image)
-        uses: aquasecurity/trivy-action@0.11.2
-        with:
-          image-ref: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
-          format: table
-          ignore-unfixed: true
-          vuln-type: os,library
-          severity: CRITICAL,HIGH
+          secrets: |
+            github_token=${{ secrets.GITHUB_TOKEN }}

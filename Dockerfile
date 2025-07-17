@@ -17,12 +17,11 @@ RUN wget https://github.com/cargo-bins/cargo-binstall/releases/latest/download/c
 RUN tar -xvf cargo-binstall-x86_64-unknown-linux-musl.tgz
 RUN cp cargo-binstall /usr/local/cargo/bin
 
-# get github token from publish.yml
-ARG GITHUB_TOKEN
-ENV GITHUB_TOKEN=${GITHUB_TOKEN}
+# get github token from publish.yml and install cargo-leptos
+RUN --mount=type=secret,id=github_token \
+  GITHUB_TOKEN=$(cat /run/secrets/github_token) \
+  cargo binstall cargo-leptos -y
 
-# Install cargo-leptos
-RUN cargo binstall cargo-leptos -y
 
 # Add the WASM target
 RUN rustup target add wasm32-unknown-unknown
