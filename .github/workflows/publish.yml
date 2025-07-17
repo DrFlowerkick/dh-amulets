@@ -3,13 +3,13 @@ name: 📦 Publish Docker Image
 on:
   push:
     tags:
-      - "v*.*.*" # Z. B. v1.0.0
+      - "v*.*.*"
     branches:
-      - release # Alternativ zu Tags
+      - release
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository }} # z. B. ghcr.io/dein-user/dh-amulets
+  IMAGE_NAME: drflowerkick/dh-amulets
 
 jobs:
   docker:
