@@ -1,19 +1,20 @@
-use crate::amulets::*;
+// central app definitions
+use crate::home::HomePage;
+use crate::setup::SetUp;
+use crate::themes::provide_theme_context;
 use leptos::prelude::*;
-use leptos::web_sys;
 use leptos_meta::{MetaTags, Stylesheet, Title, provide_meta_context};
 use leptos_router::{
     StaticSegment,
     components::{A, Route, Router, Routes},
-    hooks::{use_navigate, use_params},
-    params::Params,
+    hooks::use_navigate,
     path,
 };
 
 pub fn shell(options: LeptosOptions) -> impl IntoView {
     view! {
         <!DOCTYPE html>
-        <html lang="de" data-theme="aqua">
+        <html lang="de">
             <head>
                 <meta charset="utf-8" />
                 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -23,8 +24,13 @@ pub fn shell(options: LeptosOptions) -> impl IntoView {
                 <HydrationScripts options />
                 <MetaTags />
                 <link rel="manifest" href="/manifest.json" />
+                // use script to:
+                // 1.) set theme from local_storage or set to aqua as default, if no local storage.
+                // 2.) registration of the service worker for PWA.
                 <script>
                     "
+                    const theme = localStorage.getItem('data-theme') || 'aqua';
+                    document.documentElement.setAttribute('data-theme', theme);
                     if ('serviceWorker' in navigator) {
                         window.addEventListener('load', function () {
                             navigator.serviceWorker.register('/sw.js')
@@ -50,6 +56,9 @@ pub fn shell(options: LeptosOptions) -> impl IntoView {
 pub fn App() -> impl IntoView {
     // Provides context that manages stylesheets, titles, meta tags, etc.
     provide_meta_context();
+
+    // provide theme context
+    provide_theme_context();
 
     view! {
         // sets the document title
@@ -111,229 +120,6 @@ pub fn PawnIcon() -> impl IntoView {
     }
 }
 
-/// Renders not found view
-#[component]
-fn NotFoundView() -> impl IntoView {
-    "Page not found."
-}
-
-/// Renders the home page of your application.
-#[component]
-fn HomePage() -> impl IntoView {
-    view! {
-        <h2 class="text-2xl text-center md:text-left font-semibold tracking-wide text-secondary mb-4">
-            "Willkommen!"
-        </h2>
-        <div class="text-base text-content mb-2 space-y-2">
-            <p>
-                "Dies ist ein nichtkommerzielles Fanprojekt für das Setup von "
-                <a
-                    href="https://www.kosmos.de/de/drachenhuter_1683757_4002051683757"
-                    class="link link-primary"
-                >
-                    "Drachenhüter"
-                </a> ", einem Kartenspiel erschienen im "
-                <a href="https://www.kosmos.de" class="link link-primary">
-                    "Kosmosverlag"
-                </a> "."
-            </p>
-            <ul class="list-disc pl-5 text-base-content">
-                <li>"Wähle im Navigationsmenü die Anzahl der Spieler aus."</li>
-                <li>
-                    "Es wird eine zufällige Kombination an Amuletten berechnet, die aus dem Vorrat entfernt werden müssen."
-                </li>
-                <li>
-                    "Nutze den Button 'Neues Setup' für ein neues Setup bei der aktuellen Anzahl der Spieler."
-                </li>
-                <li>"Des Weiteren führt jeder Reload zu einem neuen Setup."</li>
-                <li>"Fertig."</li>
-            </ul>
-            <p>"Viel Spaß beim Spielen 😊"</p>
-        </div>
-        <h2 class="text-2xl text-center md:text-left font-semibold tracking-wide text-secondary mb-4">
-            "Installation"
-        </h2>
-        <div class="text-base text-content mb-2 space-y-2">
-            <p>
-                <strong>"Drachenhüter Amulett Setup"</strong>
-                " ist als "
-                <a
-                    href="https://de.wikipedia.org/wiki/Progressive_Webanwendung"
-                    class="link link-primary"
-                >
-                    "Progressive Webanwendung (PWA)"
-                </a>
-                " konzipiert. Somit kann die App sowohl mit allen Browsern, die PWA unterstützen, als auch unter Android lokal
-                installiert werden."
-            </p>
-        </div>
-        <h3 class="text-xl text-center md:text-left font-semibold tracking-wide text-secondary mb-4">
-            "Installation in Android"
-        </h3>
-        <div class="text-base text-content mb-2 space-y-2">
-            <p>
-                "Um die App unter Android zu installieren, muss diese zum "
-                <strong>"Startbildschirm"</strong> " hinzugefügt werden:"
-            </p>
-            <ul class="list-disc pl-5 text-base-content">
-                <li>
-                    <strong>"firefox"</strong>
-                    " Tippe auf die drei Punkte, danach \"App zum Startbildschirm hinzufügen\" auswählen."
-                </li>
-                <li>
-                    <strong>"vivaldi"</strong>
-                    " Tippe auf das vivaldi icon, danach \"Seite hinzufügen zu ...\" auswählen
-                    und dann Startbildschirm wählen."
-                </li>
-            </ul>
-            <p>
-                "In anderen Browsern wird das Vorgehen wahrscheinlich ähnlich sein, wurde aber bisher nicht getestet."
-            </p>
-        </div>
-        <h3 class="text-xl text-center md:text-left font-semibold tracking-wide text-secondary mb-4">
-            "Installation in Linux und Windows"
-        </h3>
-        <div class="text-base text-content mb-2 space-y-2">
-            <p>
-                "Um die App in Linux und Windows zu installieren, muss die Webseite in einem Browser geöffnet werden, der PWA unterstützt.
-                Danach dann wie folgt weiter vorgehen:"
-            </p>
-            <ul class="list-disc pl-5 text-base-content">
-                <li>
-                    <strong>"chromium"</strong>
-                    " Links-click auf das "
-                    <em>"Monitor Symbol mit dem Pfeil nach unten"</em>
-                    " rechts in der
-                    URL Adressleiste. Wenn man mit der Maus über dem Symbol schwebt, wird der Informationstext \"Drachenhüter Amulet
-                    Setup installieren\" angezeigt."
-                </li>
-                <li>
-                    <strong>"vivaldi"</strong>
-                    " Rechts-click in der Tableiste auf den Tab mit der geöffneten Drachenhüter
-                    Webseite und \"Progressive Web-Apps\" -> \"Drachenhüter Amulet Setup installieren...\" auswählen."
-                </li>
-            </ul>
-            <p>
-                "Chrome und Edge wurden bisher nicht getestet, sollten aber wie bei chromium funktionieren. Leider unterstützt firefox
-                kein PWA unter Linux und Windows. Verwende hierfür einen chromium basierten Browser."
-            </p>
-        </div>
-        {ThemeSelector()}
-    }
-}
-
-#[component]
-pub fn ThemeSelector() -> impl IntoView {
-    let (theme, set_theme) = signal(None::<String>);
-
-    // Get theme from document if signal is set to None
-    Effect::new(move |_| {
-        if theme.get().is_none() {
-            if let Some(window) = web_sys::window() {
-                if let Ok(Some(local_storage)) = window.local_storage() {
-                    if let Ok(Some(theme_name)) = local_storage.get_item("data-theme") {
-                        if let Some(html) = window.document().and_then(|doc| doc.document_element())
-                        {
-                            html.set_attribute("data-theme", theme_name.as_str())
-                                .unwrap();
-                        }
-                        set_theme.set(Some(theme_name));
-                        return;
-                    }
-                }
-                if let Some(theme_name) = window
-                    .document()
-                    .and_then(|doc| doc.document_element())
-                    .and_then(|el| el.get_attribute("data-theme"))
-                {
-                    set_theme.set(Some(theme_name));
-                }
-            }
-        }
-    });
-
-    view! {
-        <h2 class="text-2xl text-center md:text-left font-semibold tracking-wide text-secondary mb-4">
-            "Themenauswahl"
-        </h2>
-        <div class="text-base text-content mb-2 space-y-2">
-            <p>
-                "Du kannst verschiedene Themen für "<strong>"Drachenhüter Amulett Setup"</strong>
-                " auswählen. Probiere sie einfach aus."
-            </p>
-        </div>
-        <button
-            class="btn mx-auto md:mx-0 block"
-            popovertarget="popover-1"
-            style="anchor-name:--anchor-1"
-        >
-            "Thema wählen (Aktuell: "
-            {move || theme.get()}
-            ")"
-        </button>
-        <ul
-            class="dropdown dropdown-top menu w-52 rounded-box bg-base-100 shadow-sm"
-            popover
-            id="popover-1"
-            style="position-anchor:--anchor-1"
-        >
-            {ThemeButton(ThemeButtonProps {
-                theme_name: "fantasy",
-                set_theme,
-            })}
-            {ThemeButton(ThemeButtonProps {
-                theme_name: "caramellatte",
-                set_theme,
-            })}
-            {ThemeButton(ThemeButtonProps {
-                theme_name: "coffee",
-                set_theme,
-            })}
-            {ThemeButton(ThemeButtonProps {
-                theme_name: "business",
-                set_theme,
-            })}
-            {ThemeButton(ThemeButtonProps {
-                theme_name: "synthwave",
-                set_theme,
-            })}
-            {ThemeButton(ThemeButtonProps {
-                theme_name: "aqua",
-                set_theme,
-            })}
-        </ul>
-    }
-}
-
-#[component]
-pub fn ThemeButton(
-    theme_name: &'static str,
-    set_theme: WriteSignal<Option<String>>,
-) -> impl IntoView {
-    view! {
-        <li>
-            <label
-                data-theme=theme_name
-                class="btn w-full transition duration-200 hover:scale-105"
-                on:click=move |_| {
-                    if let Some(window) = web_sys::window() {
-                        if let Some(html) = window.document().and_then(|doc| doc.document_element())
-                        {
-                            html.set_attribute("data-theme", theme_name).unwrap();
-                        }
-                        if let Ok(Some(local_storage)) = window.local_storage() {
-                            local_storage.set_item("data-theme", theme_name).unwrap();
-                        }
-                    }
-                    set_theme.set(Some(theme_name.to_string()));
-                }
-            >
-                {theme_name}
-            </label>
-        </li>
-    }
-}
-
 #[component]
 fn RedirectToSetupDefault() -> impl IntoView {
     let navigate = use_navigate();
@@ -347,87 +133,8 @@ fn RedirectToSetupDefault() -> impl IntoView {
     SetUp()
 }
 
-#[derive(Params, PartialEq, Clone, Debug)]
-pub struct ParamNumPlayers {
-    // Params isn't implemented for usize, only Option<usize>
-    pub num: Option<usize>,
-}
-
-/// Renders the home page of your application.
+/// Renders not found view
 #[component]
-fn SetUp() -> impl IntoView {
-    // get number of players from url
-    let params = use_params::<ParamNumPlayers>();
-
-    let setup_data = RwSignal::new(None::<SetupData>);
-
-    let navigate = use_navigate();
-
-    let parse_params = move |_| match params.get() {
-        Err(_) => {
-            navigate("/not-found", Default::default());
-        }
-        Ok(np) => match np.num {
-            Some(num) => {
-                if !(2..=4).contains(&num) {
-                    navigate("/setup/2", Default::default());
-                } else {
-                    let np = NumPlayers::from(np);
-                    setup_data.set(Some(SetupData::setup(np)));
-                }
-            }
-            None => {
-                navigate("/setup/2", Default::default());
-            }
-        },
-    };
-
-    Effect::new(parse_params);
-
-    let new_setup = move |_| {
-        if let Some(setup) = setup_data.get() {
-            let current_num_players = setup.num_players;
-            setup_data.set(Some(SetupData::setup(current_num_players)));
-        }
-    };
-
-    view! {
-        <Show when=move || setup_data.get().is_some() fallback=|| view! { <p>"Lade Setup..."</p> }>
-            {move || {
-                let setup = setup_data.get().unwrap();
-                view! {
-                    <h2 class="text-2xl text-center font-semibold tracking-wide text-secondary mb-4">
-                        "Setup für "
-                        <strong>{setup.num_players.to_string().to_lowercase()}</strong>" Spieler"
-                    </h2>
-
-                    <div class="amulet-grid">
-                        <For
-                            each=move || setup.removals.clone()
-                            key=|removal| (removal.amulet_type, removal.count)
-                            children=move |removal| {
-                                view! {
-                                    <div class="amulet-cell">
-                                        <p class="text-xl pl-6 pr-3 font-semibold text-base-content">
-                                            <strong>{removal.count}</strong>
-                                            "x"
-                                        </p>
-                                        <img
-                                            class="max-w-7/10 object-contain"
-                                            src=removal.amulet_type.image_path()
-                                            alt=removal.amulet_type.alt_text()
-                                        />
-                                    </div>
-                                }
-                            }
-                        />
-                    </div>
-
-                    <button class="btn text-2xl mt-6 mx-auto block" on:click=new_setup>
-                        "Neues Setup"
-                    </button>
-                }
-            }}
-        </Show>
-    }
+fn NotFoundView() -> impl IntoView {
+    "Page not found."
 }
