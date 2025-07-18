@@ -1,6 +1,6 @@
 // All amulet data types and interactions
 
-use crate::app::ParamNumPlayers;
+use crate::setup::ParamNumPlayers;
 use rand::{rng, seq::IndexedRandom};
 use std::fmt;
 

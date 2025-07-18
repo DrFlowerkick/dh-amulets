@@ -1,5 +1,5 @@
 // Versioned cache name (generated via build.rs from Cargo.toml)
-const CACHE_NAME = "drachenhueter-amulet-setup-v0.7.2";
+const CACHE_NAME = "drachenhueter-amulet-setup-v0.7.3";
 
 // Static assets to pre-cache
 const ASSETS = [
