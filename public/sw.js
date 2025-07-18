@@ -1,4 +1,4 @@
-const CACHE_NAME = "leptos-app-v1";
+const CACHE_NAME = "leptos-app-v2";
 const ASSETS = [
   "/",
   "/pkg/dh-amulets.wasm",
