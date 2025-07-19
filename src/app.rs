@@ -28,21 +28,22 @@ pub fn shell(options: LeptosOptions) -> impl IntoView {
                 // 1.) set theme from local_storage or set to aqua as default, if no local storage.
                 // 2.) registration of the service worker for PWA.
                 <script>
-                    "
-                    const theme = localStorage.getItem('data-theme') || 'aqua';
-                    document.documentElement.setAttribute('data-theme', theme);
-                    if ('serviceWorker' in navigator) {
-                        window.addEventListener('load', function () {
-                            navigator.serviceWorker.register('/sw.js')
-                                .then(function (registration) {
-                                    console.log('ServiceWorker registration successful:', registration);
-                                })
-                                .catch(function (err) {
-                                    console.log('ServiceWorker registration failed:', err);
-                                });
-                        });
-                    }
-                    "
+                    r#"
+                        const theme = localStorage.getItem('data-theme') || 'aqua';
+                        document.documentElement.setAttribute('data-theme', theme);
+
+                        if ('serviceWorker' in navigator) {
+                            window.addEventListener('load', function () {
+                                navigator.serviceWorker.register('/sw.js')
+                                    .then(function (registration) {
+                                        console.log('ServiceWorker registration successful:', registration);
+                                    })
+                                    .catch(function (err) {
+                                        console.log('ServiceWorker registration failed:', err);
+                                    });
+                            });
+                        }
+                    "#
                 </script>
             </head>
             <body>
