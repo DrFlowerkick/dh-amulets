@@ -30,3 +30,9 @@ run-dh-amulets:
 .PHONY: clean
 clean:
 	cargo clean
+
+# -------- check running webserver --------
+
+.PHONY: webserver
+webserver:
+	@lsof -i :3000
