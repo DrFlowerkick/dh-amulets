@@ -12,3 +12,6 @@ env:
 jobs:
   audit:
     uses: ./.github/workflows/_audit.yml
+
+  release:
+    uses: ./.github/workflows/_release_please.yml
