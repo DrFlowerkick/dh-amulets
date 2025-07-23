@@ -1,5 +1,6 @@
 // central app definitions
 use crate::home::HomePage;
+use crate::menu::MenuButton;
 use crate::setup::SetUp;
 use crate::themes::provide_theme_context;
 use leptos::prelude::*;
@@ -67,16 +68,20 @@ pub fn App() -> impl IntoView {
 
         // define routes
         <Router>
-            <header class="p-4 text-center bg-base-200 shadow-md">
-                <h1 class="text-3xl font-bold tracking-wide text-primary">
-                    "Drachenhüter Amulett Setup"
-                </h1>
+            <header class="flex items-center justify-between p-4 bg-base-200 shadow-md">
+                <A
+                    href="/"
+                    attr:class="flex items-center space-x-2 hover:opacity-80 transition-all"
+                >
+                    <img src="/icon-512.png" alt="Logo" class="w-6 h-6" />
+                    <h1 class="text-2xl sm:text-3xl font-bold tracking-wide text-primary">
+                        Drachenhüter Amulett Setup
+                    </h1>
+                </A>
+                <MenuButton />
             </header>
 
-            <nav class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-[0.2em] bg-base-300">
-                <A href="/" attr:class="nav-btn">
-                    "Home"
-                </A>
+            <nav class="grid grid-cols-1 sm:grid-cols-3 gap-[0.2em] bg-base-300">
                 <A href="/setup/2" attr:class="nav-btn" attr:title="Setup für zwei Spieler">
                     <PawnIcon />
                     <PawnIcon />

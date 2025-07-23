@@ -6,39 +6,53 @@ test.describe('Theme selector', () => {
     test('Default theme is aqua on first load', async ({ page }) => {
         await page.goto('http://localhost:3000/');
 
-        // checking <html data-theme="aqua">
+        // <html data-theme="aqua">
         const html = page.locator('html');
         await expect(html).toHaveAttribute('data-theme', 'aqua');
 
-        // checking text of button
-        const button = page.locator('button', { hasText: 'Thema wählen' });
-        await expect(button).toContainText('Aktuell: aqua');
+        // open menu → find name of current theme and button "Thema wählen"
+        const menuButton = page.getByRole('button', { name: 'Menü' });
+        await menuButton.click();
+
+        const themeButton = page.getByRole('button', { name: /Thema wählen/i });
+        await expect(themeButton).toBeVisible();
+        const currentTheme = page.getByTestId('current-theme');
+        await expect(currentTheme).toHaveText('aqua');
+        await expect(currentTheme).toBeVisible();
     });
 
     for (const theme of themes) {
         test(`Selecting theme "${theme}" sets data-theme and updates button`, async ({ page }) => {
             await page.goto('http://localhost:3000/');
 
-            // open the popover
-            const openPopover = page.getByRole('button', { name: /Thema wählen/i });
-            await openPopover.click();
+            // open menu → find name of current theme and button "Thema wählen"
+            const menuButton = page.getByRole('button', { name: 'Menü' });
+            await menuButton.click();
 
-            // click on theme of the label
+            const themeTrigger = page.getByRole('button', { name: /Thema wählen/i });
+            // make sure the button is there
+            await expect(themeTrigger).toHaveCount(1); 
+
+            await expect(themeTrigger).toBeVisible();
+            await themeTrigger.click();
+
+            // click theme label
             const label = page.locator(`label[data-theme="${theme}"]`);
             await expect(label).toBeVisible();
             await label.click();
 
-            // <html> has new theme
+            // check HTML attribut
             const html = page.locator('html');
             await expect(html).toHaveAttribute('data-theme', theme);
 
-            // button shows active theme
-            await expect(openPopover).toContainText(`Aktuell: ${theme}`);
+            // check span with theme name
+            const currentTheme = page.getByTestId('current-theme');
+            await expect(currentTheme).toHaveText(theme);
+            await expect(currentTheme).toBeVisible();
 
-            // check if theme is stored
+            // check local storage
             const stored = await page.evaluate(() => localStorage.getItem('data-theme'));
             expect(stored).toBe(theme);
         });
     }
 });
-
