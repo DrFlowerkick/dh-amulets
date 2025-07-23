@@ -1,6 +1,5 @@
 // home route of app
 
-use crate::themes::ThemeSelector;
 use leptos::prelude::*;
 
 #[component]
@@ -103,6 +102,15 @@ pub fn HomePage() -> impl IntoView {
                 kein PWA unter Linux und Windows. Verwende hierfür einen chromium basierten Browser."
             </p>
         </div>
-        {ThemeSelector()}
+        <h2 class="text-2xl text-center md:text-left font-semibold tracking-wide text-secondary mb-4">
+            "Themenauswahl"
+        </h2>
+        <div class="text-base text-content mb-2 space-y-2">
+            <p>
+                "Du kannst verschiedene Themen für "<strong>"Drachenhüter Amulett Setup"</strong>
+                " auswählen. Probiere sie einfach aus. Clicke dazu den "<em>"Menü"</em>
+                " Button oben rechts."
+            </p>
+        </div>
     }
 }
