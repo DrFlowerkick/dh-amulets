@@ -1,5 +1,6 @@
 // central app definitions
 use crate::home::HomePage;
+use crate::menu::MenuButton;
 use crate::setup::SetUp;
 use crate::themes::provide_theme_context;
 use leptos::prelude::*;
@@ -77,6 +78,7 @@ pub fn App() -> impl IntoView {
                         Drachenhüter Amulett Setup
                     </h1>
                 </A>
+                <MenuButton />
             </header>
 
             <nav class="grid grid-cols-1 sm:grid-cols-3 gap-[0.2em] bg-base-300">

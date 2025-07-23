@@ -1,6 +1,7 @@
 pub mod amulets;
 pub mod app;
 pub mod home;
+pub mod menu;
 pub mod setup;
 pub mod themes;
 
