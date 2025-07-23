@@ -31,7 +31,7 @@ pub fn shell(options: LeptosOptions) -> impl IntoView {
                     r#"
                         const theme = localStorage.getItem('data-theme') || 'aqua';
                         document.documentElement.setAttribute('data-theme', theme);
-
+                    
                         if ('serviceWorker' in navigator) {
                             window.addEventListener('load', function () {
                                 navigator.serviceWorker.register('/sw.js')
