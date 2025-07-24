@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.1](https://github.com/DrFlowerkick/dh-amulets/compare/v0.2.0...v0.2.1) (2025-07-24)
+
+
+### Bug Fixes
+
+* trigger release ([4f7d96e](https://github.com/DrFlowerkick/dh-amulets/commit/4f7d96e4db77cb54e19591f672bc657c25482c07))
+
 ## [0.2.0](https://github.com/DrFlowerkick/dh-amulets/compare/v0.1.0...v0.2.0) (2025-07-24)
 
 
