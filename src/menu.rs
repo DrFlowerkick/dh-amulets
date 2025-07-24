@@ -24,7 +24,7 @@ pub fn MenuButton() -> impl IntoView {
             <ul
                 id="popover-menu"
                 popover
-                class="dropdown dropdown-left mt-2 menu rounded-box bg-base-100 shadow-md p-2 w-56"
+                class="dropdown dropdown-end mt-2 menu rounded-box bg-base-100 shadow-md p-2 w-56"
                 style="position-anchor:--anchor-menu"
             >
                 <h3 class="text-lg font-semibold mb-1">"Menü"</h3>
