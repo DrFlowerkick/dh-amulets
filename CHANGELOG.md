@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.2](https://github.com/DrFlowerkick/dh-amulets/compare/v0.2.1...v0.2.2) (2025-07-24)
+
+
+### Bug Fixes
+
+* fixing workflows to work better with branch protection rules. Fixing release-please config to change the version of sw.js, too. ([#50](https://github.com/DrFlowerkick/dh-amulets/issues/50)) ([#51](https://github.com/DrFlowerkick/dh-amulets/issues/51)) ([ba4d2c9](https://github.com/DrFlowerkick/dh-amulets/commit/ba4d2c90bbb4e82e41052d28438dd64b00702753))
+
 ## [0.2.1](https://github.com/DrFlowerkick/dh-amulets/compare/v0.2.0...v0.2.1) (2025-07-24)
 
 
