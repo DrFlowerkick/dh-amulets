@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.2.0](https://github.com/DrFlowerkick/dh-amulets/compare/v0.1.0...v0.2.0) (2025-07-24)
+
+
+### Features
+
+* Refactoring_nav_header ([35605e6](https://github.com/DrFlowerkick/dh-amulets/commit/35605e64018c16dda709d8882094ea63ed5ae2ae))
+
+
+### Bug Fixes
+
+* header and release workflow ([#48](https://github.com/DrFlowerkick/dh-amulets/issues/48)) ([35605e6](https://github.com/DrFlowerkick/dh-amulets/commit/35605e64018c16dda709d8882094ea63ed5ae2ae))
+
 ## 0.1.0 (2025-07-23)
 
 
