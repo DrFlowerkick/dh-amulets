@@ -1,5 +1,5 @@
 // Versioned cache name (generated via build.rs from Cargo.toml)
-const CACHE_NAME = "drachenhueter-amulet-setup-v0.2.0";
+const CACHE_NAME = "drachenhueter-amulet-setup-v0.2.1"; // x-release-please-version
 
 // Static assets to pre-cache
 const ASSETS = [
@@ -31,7 +31,8 @@ self.addEventListener("install", (event) => {
   console.log("[SW] Installing service worker...");
   self.skipWaiting(); // activate immediately
   event.waitUntil(
-    caches.open(CACHE_NAME)
+    caches
+      .open(CACHE_NAME)
       .then((cache) => cache.addAll(ASSETS))
       .catch((err) => console.error("[SW] Cache error during install:", err))
   );
@@ -41,16 +42,19 @@ self.addEventListener("install", (event) => {
 self.addEventListener("activate", (event) => {
   console.log("[SW] Activating service worker...");
   event.waitUntil(
-    caches.keys().then((keys) =>
-      Promise.all(
-        keys
-          .filter((key) => key !== CACHE_NAME)
-          .map((key) => {
-            console.log("[SW] Deleting old cache:", key);
-            return caches.delete(key);
-          })
+    caches
+      .keys()
+      .then((keys) =>
+        Promise.all(
+          keys
+            .filter((key) => key !== CACHE_NAME)
+            .map((key) => {
+              console.log("[SW] Deleting old cache:", key);
+              return caches.delete(key);
+            })
+        )
       )
-    ).then(() => self.clients.claim())
+      .then(() => self.clients.claim())
   );
 });
 
