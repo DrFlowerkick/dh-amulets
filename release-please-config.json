@@ -1,8 +1,13 @@
 {
+  "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
   "release-type": "rust",
   "packages": {
     ".": {
-      "release-type": "rust"
+      "release-type": "rust",
+      "changelog-path": "CHANGELOG.md",
+      "extra-files": [
+        "public/sw.js"
+      ]
     }
   }
 }

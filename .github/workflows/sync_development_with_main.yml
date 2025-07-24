@@ -1,0 +1,49 @@
+# .github/workflows/sync_development_with_main.yml
+name: 🔁 Sync development with main
+
+on:
+  workflow_dispatch:
+
+jobs:
+  sync:
+    name: Rebase development on main
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Configure Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Fetch all branches
+        run: |
+          git fetch origin main
+          git fetch origin development
+
+      - name: Create branch dev-on-main
+        run: |
+          git checkout origin/development
+          git switch -c dev-on-main
+
+      - name: Rebase on main, prefer theirs
+        run: |
+          git rebase -X theirs origin/main
+
+      - name: Push new sync branch
+        run: |
+          git push origin dev-on-main --force-with-lease
+
+      - name: Create Pull Request (dev-on-main → development)
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          branch: dev-on-main
+          title: "chore(sync): rebase development on main"
+          body: "Automatisierter PR zum Synchronisieren von development mit main (Run ID: ${{ github.run_id }})"
+          base: development
