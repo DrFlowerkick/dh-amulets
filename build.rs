@@ -9,7 +9,7 @@ fn main() {
     let sw_template = fs::read_to_string("public/sw.template.js").expect("failed to read template");
 
     // set {{VERSION}} in template
-    let sw_content = sw_template.replace("{{VERSION}}", &version);
+    let sw_content = sw_template.replace("{{version}}", &version);
 
     // write template with version in file
     fs::write("public/sw.js", sw_content).expect("failed to write sw.js");
