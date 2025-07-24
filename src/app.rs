@@ -74,7 +74,7 @@ pub fn App() -> impl IntoView {
                     attr:class="flex items-center space-x-2 hover:opacity-80 transition-all"
                 >
                     <img src="/icon-512.png" alt="Logo" class="w-6 h-6" />
-                    <h1 class="text-2xl sm:text-3xl font-bold tracking-wide text-primary">
+                    <h1 class="text-lg sm:text-3xl font-bold tracking-wide text-primary">
                         Drachenhüter Amulett Setup
                     </h1>
                 </A>
