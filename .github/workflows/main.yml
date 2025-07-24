@@ -15,5 +15,5 @@ jobs:
 
   release:
     uses: ./.github/workflows/_release_please.yml
-    with:
+    secrets:
       token: ${{ secrets.RELEASE_PLEASE_PAT }}
