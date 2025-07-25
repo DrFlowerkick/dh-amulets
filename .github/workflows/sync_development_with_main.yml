@@ -21,19 +21,17 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-      - name: Fetch all branches
+      - name: Fetch origin
         run: |
-          git fetch origin main
-          git fetch origin development
+          git fetch origin
 
       - name: Create branch dev-on-main
         run: |
-          git checkout origin/development
-          git switch -c dev-on-main
+          git checkout -b dev-on-main origin/development
 
       - name: Rebase on main, prefer theirs
         run: |
-          git rebase -X theirs --reapply-cherry-picks origin/main
+          git rebase origin/main --strategy=recursive --strategy-option=theirs
 
       - name: Push new sync branch
         run: |
@@ -45,5 +43,10 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           branch: dev-on-main
           title: "chore(sync): rebase development on main"
-          body: "Automatisierter PR zum Synchronisieren von development mit main (Run ID: ${{ github.run_id }})"
+          body: | # pipe symbol is required for multi line string
+            Automatisierter PR zum Synchronisieren von `development` mit `main`.
+
+            **WICHTIG:** Bitte diesen Pull Request mit der Option **"Rebase and merge"** mergen, um eine lineare Historie zu gewährleisten und `development` exakt mit `main` zu synchronisieren.
+
+            (Run ID: ${{ github.run_id }})
           base: development
