@@ -33,7 +33,7 @@ jobs:
 
       - name: Rebase on main, prefer theirs
         run: |
-          git rebase -X theirs origin/main
+          git rebase -X theirs --reapply-cherry-picks origin/main
 
       - name: Push new sync branch
         run: |
