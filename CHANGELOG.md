@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.3](https://github.com/DrFlowerkick/dh-amulets/compare/v0.2.2...v0.2.3) (2025-07-25)
+
+
+### Bug Fixes
+
+* fix workflows and sw version handling ([#56](https://github.com/DrFlowerkick/dh-amulets/issues/56)) ([2731f50](https://github.com/DrFlowerkick/dh-amulets/commit/2731f5030c8cb87b70d280de6fd2a83207cc99ea))
+
 ## [0.2.2](https://github.com/DrFlowerkick/dh-amulets/compare/v0.2.1...v0.2.2) (2025-07-24)
 
 
