@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.0](https://github.com/DrFlowerkick/dh-amulets/compare/v0.2.3...v0.3.0) (2025-07-25)
+
+
+### Features
+
+* Feat_new_setup_button_in_heading ([#61](https://github.com/DrFlowerkick/dh-amulets/issues/61)) ([#62](https://github.com/DrFlowerkick/dh-amulets/issues/62)) ([32c2657](https://github.com/DrFlowerkick/dh-amulets/commit/32c265713dc5b89ba6409e278b278874ed692462))
+
 ## [0.2.3](https://github.com/DrFlowerkick/dh-amulets/compare/v0.2.2...v0.2.3) (2025-07-25)
 
 
