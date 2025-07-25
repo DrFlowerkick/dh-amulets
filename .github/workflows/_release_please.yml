@@ -1,4 +1,4 @@
-# .github/workflows/release_please.yml
+# .github/workflows/_release_please.yml
 name: release-please
 
 description: |

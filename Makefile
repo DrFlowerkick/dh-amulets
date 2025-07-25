@@ -1,17 +1,17 @@
-# -------- variables --------
+# -------- Constants & Configuration --------
 
-CARGO_LEPTOS=cargo leptos
+CARGO_LEPTOS := cargo leptos
+DEV_RUSTFLAGS := RUSTFLAGS="--cfg erase_components"
+SERVER_NAME := dh-amulet
+WEB_PORT := 3000
 
-# use this flags when developing for faster compile
-DEV_RUSTFLAGS=RUSTFLAGS="--cfg erase_components"
-
-# -------- Leptos fmt --------
+# -------- Code Formatting --------
 
 .PHONY: fmt
 fmt:
 	cargo fmt && leptosfmt ./**/*.rs
 
-# -------- SSR dh-amulets
+# -------- SSR Build & Run --------
 
 .PHONY: dev-dh-amulets
 dev-dh-amulets:
@@ -31,8 +31,19 @@ run-dh-amulets:
 clean:
 	cargo clean
 
-# -------- check running webserver --------
+# -------- Webserver Monitoring & Control --------
 
 .PHONY: webserver
 webserver:
-	@lsof -i :3000
+	@lsof -i :$(WEB_PORT) || echo "✅ No process listening on port $(WEB_PORT)."
+
+.PHONY: kill-webserver
+kill-webserver:
+	@echo "🔍 Checking for running $(SERVER_NAME) server on port $(WEB_PORT)..."
+	@PID=$$(lsof -i :$(WEB_PORT) -sTCP:LISTEN -t -a -c $(SERVER_NAME)); \
+	if [ -n "$$PID" ]; then \
+		echo "🛑 Found $(SERVER_NAME) (PID: $$PID), stopping it..."; \
+		kill $$PID; \
+	else \
+		echo "✅ No $(SERVER_NAME) server running on port $(WEB_PORT)."; \
+	fi
