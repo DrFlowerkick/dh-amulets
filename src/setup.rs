@@ -56,10 +56,34 @@ pub fn SetUp() -> impl IntoView {
             {move || {
                 let setup = setup_data.get().unwrap();
                 view! {
-                    <h2 class="text-2xl text-center font-semibold tracking-wide text-secondary mb-4">
+                    <button
+                        data-testid="setup-heading"
+                        aria-label="Neues Setup"
+                        title="Klicke für ein neues Setup"
+                        on:click=new_setup
+                        class="btn btn-ghost text-2xl font-semibold tracking-wide text-secondary mb-4 flex items-center justify-center gap-2 mx-auto"
+                    >
                         "Setup für "
-                        <strong>{setup.num_players.to_string().to_lowercase()}</strong>" Spieler"
-                    </h2>
+                        <strong>{setup.num_players.to_string().to_lowercase()}</strong>
+                        " Spieler"
+
+                        // Reload Icon
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            class="w-6 h-6"
+                        >
+                            <path d="M2 12a10 10 0 0 1 18.4-5.6" />
+                            <polyline points="20 1 20.4 6.4 15 6" />
+                            <path d="M22 12a10 10 0 0 1-18.4 5.6" />
+                            <polyline points="4 23 3.6 17.6 9 18" />
+                        </svg>
+                    </button>
 
                     <div class="amulet-grid">
                         <For
@@ -82,10 +106,6 @@ pub fn SetUp() -> impl IntoView {
                             }
                         />
                     </div>
-
-                    <button class="btn text-2xl mt-6 mx-auto block" on:click=new_setup>
-                        "Neues Setup"
-                    </button>
                 }
             }}
         </Show>
