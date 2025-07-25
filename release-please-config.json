@@ -6,7 +6,10 @@
       "release-type": "rust",
       "changelog-path": "CHANGELOG.md",
       "extra-files": [
-        "public/sw.js"
+        {
+          "type": "generic",
+          "path": "public/sw.js"
+        }
       ]
     }
   }
