@@ -63,10 +63,11 @@ pub fn SetUp() -> impl IntoView {
                         on:click=new_setup
                         class="btn btn-ghost text-2xl font-semibold tracking-wide text-secondary mb-4 flex items-center justify-center gap-2 mx-auto"
                     >
-                        "Setup für "
-                        <strong>{setup.num_players.to_string().to_lowercase()}</strong>
-                        " Spieler"
-
+                        <p>
+                            "Setup für "
+                            <strong>{setup.num_players.to_string().to_lowercase()}</strong>
+                            " Spieler"
+                        </p>
                         // Reload Icon
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
@@ -92,12 +93,12 @@ pub fn SetUp() -> impl IntoView {
                             children=move |removal| {
                                 view! {
                                     <div class="amulet-cell">
-                                        <p class="text-xl pl-6 pr-3 font-semibold text-base-content">
+                                        <p class="text-xl pr-2 font-semibold text-base-content">
                                             <strong>{removal.count}</strong>
                                             "x"
                                         </p>
                                         <img
-                                            class="max-w-7/10 object-contain"
+                                            class="max-w-8/10 object-contain"
                                             src=removal.amulet_type.image_path()
                                             alt=removal.amulet_type.alt_text()
                                         />
