@@ -27,9 +27,9 @@ pub fn HomePage() -> impl IntoView {
                     "Es wird eine zufällige Kombination an Amuletten berechnet, die aus dem Vorrat entfernt werden müssen."
                 </li>
                 <li>
-                    "Nutze den Button 'Neues Setup' für ein neues Setup bei der aktuellen Anzahl der Spieler."
+                    "Klicke oder tippe auf die Setup Überschrift für ein neues Setup bei der aktuellen Anzahl der Spieler."
                 </li>
-                <li>"Des Weiteren führt jeder Reload zu einem neuen Setup."</li>
+                <li>"Des Weiteren führt jeder Reload der Webseite zu einem neuen Setup."</li>
                 <li>"Fertig."</li>
             </ul>
             <p>"Viel Spaß beim Spielen 😊"</p>
