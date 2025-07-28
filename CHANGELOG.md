@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.1](https://github.com/DrFlowerkick/dh-amulets/compare/dh-amulets-v0.4.0...dh-amulets-v0.4.1) (2025-07-28)
+
+
+### Bug Fixes
+
+* :bug: Reworked usage information on home page. ([#74](https://github.com/DrFlowerkick/dh-amulets/issues/74)) ([a93ffe1](https://github.com/DrFlowerkick/dh-amulets/commit/a93ffe1d5caec5cee0e0465bfb81ce3b88b3c63e))
+
 ## [0.4.0](https://github.com/DrFlowerkick/dh-amulets/compare/dh-amulets-v0.3.1...dh-amulets-v0.4.0) (2025-07-26)
 
 
