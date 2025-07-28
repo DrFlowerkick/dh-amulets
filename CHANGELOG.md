@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.2](https://github.com/DrFlowerkick/dh-amulets/compare/v0.4.1...v0.4.2) (2025-07-28)
+
+
+### Bug Fixes
+
+* :wrench: Change release-please configuration to exclude component name in tag ([6f53eb2](https://github.com/DrFlowerkick/dh-amulets/commit/6f53eb27b5704f02619eca64f3d111b7af589773))
+
 ## [0.4.1](https://github.com/DrFlowerkick/dh-amulets/compare/dh-amulets-v0.4.0...dh-amulets-v0.4.1) (2025-07-28)
 
 
