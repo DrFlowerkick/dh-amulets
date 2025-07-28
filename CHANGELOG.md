@@ -1,5 +1,31 @@
 # Changelog
 
+## [0.5.0](https://github.com/DrFlowerkick/dh-amulets/compare/v0.4.1...v0.5.0) (2025-07-28)
+
+
+### Features
+
+* Feat_new_setup_button_in_heading ([#61](https://github.com/DrFlowerkick/dh-amulets/issues/61)) ([#62](https://github.com/DrFlowerkick/dh-amulets/issues/62)) ([32c2657](https://github.com/DrFlowerkick/dh-amulets/commit/32c265713dc5b89ba6409e278b278874ed692462))
+* refactoring app hader and nav to include a menu button ([#40](https://github.com/DrFlowerkick/dh-amulets/issues/40)) ([f7fccd1](https://github.com/DrFlowerkick/dh-amulets/commit/f7fccd1cd669e54721e753ba1d1e32dbf5bf6c38))
+* Refactoring_nav_header ([35605e6](https://github.com/DrFlowerkick/dh-amulets/commit/35605e64018c16dda709d8882094ea63ed5ae2ae))
+* Refactoring_nav_header ([48b8090](https://github.com/DrFlowerkick/dh-amulets/commit/48b80902a6368964c27f16b70d4adda9425ec322))
+* Refactoring_nav_header ([f876491](https://github.com/DrFlowerkick/dh-amulets/commit/f876491e26cbc0e3c3a2f43cfea07001810742a8))
+* Refactoring_nav_header ([f7fccd1](https://github.com/DrFlowerkick/dh-amulets/commit/f7fccd1cd669e54721e753ba1d1e32dbf5bf6c38))
+
+
+### Bug Fixes
+
+* :bug: Reworked usage information on home page. ([#74](https://github.com/DrFlowerkick/dh-amulets/issues/74)) ([a93ffe1](https://github.com/DrFlowerkick/dh-amulets/commit/a93ffe1d5caec5cee0e0465bfb81ce3b88b3c63e))
+* :wrench: Change release-please configuration to exclude component name in tag ([6f53eb2](https://github.com/DrFlowerkick/dh-amulets/commit/6f53eb27b5704f02619eca64f3d111b7af589773))
+* fix workflows and sw version handling ([#56](https://github.com/DrFlowerkick/dh-amulets/issues/56)) ([2731f50](https://github.com/DrFlowerkick/dh-amulets/commit/2731f5030c8cb87b70d280de6fd2a83207cc99ea))
+* Fix_workflows_and_sw_versioning ([6e451ff](https://github.com/DrFlowerkick/dh-amulets/commit/6e451ff99b79708d3381440d93a4680fe91cde79))
+* Fix-semver-tagging ([#76](https://github.com/DrFlowerkick/dh-amulets/issues/76)) ([6f53eb2](https://github.com/DrFlowerkick/dh-amulets/commit/6f53eb27b5704f02619eca64f3d111b7af589773))
+* fixing workflows to work better with branch protection rules. Fixing release-please config to change the version of sw.js, too. ([#50](https://github.com/DrFlowerkick/dh-amulets/issues/50)) ([#51](https://github.com/DrFlowerkick/dh-amulets/issues/51)) ([ba4d2c9](https://github.com/DrFlowerkick/dh-amulets/commit/ba4d2c90bbb4e82e41052d28438dd64b00702753))
+* format of amulet size and setup heading ([4f79bc7](https://github.com/DrFlowerkick/dh-amulets/commit/4f79bc77906e2b5a8f29a470ca59eb1d4d24629d))
+* header and release workflow ([#48](https://github.com/DrFlowerkick/dh-amulets/issues/48)) ([35605e6](https://github.com/DrFlowerkick/dh-amulets/commit/35605e64018c16dda709d8882094ea63ed5ae2ae))
+* next fix trying to get workflow sync and sw versioning with release-please running. ([#65](https://github.com/DrFlowerkick/dh-amulets/issues/65)) ([#66](https://github.com/DrFlowerkick/dh-amulets/issues/66)) ([148da87](https://github.com/DrFlowerkick/dh-amulets/commit/148da8787c7ffacc70bdcbde23245b3201e905f7))
+* trigger release ([4f7d96e](https://github.com/DrFlowerkick/dh-amulets/commit/4f7d96e4db77cb54e19591f672bc657c25482c07))
+
 ## [0.4.1](https://github.com/DrFlowerkick/dh-amulets/compare/dh-amulets-v0.4.0...dh-amulets-v0.4.1) (2025-07-28)
 
 
