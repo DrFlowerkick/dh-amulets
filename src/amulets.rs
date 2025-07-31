@@ -163,6 +163,15 @@ impl AmuletId {
     const MAX_VALUES: [usize; 8] = [8, 8, 5, 4, 8, 4, 5, 3];
 
     pub fn encode(setup: &SetupData) -> Option<Self> {
+        let total_count = setup.removals.iter().map(|r| r.count).sum::<usize>();
+        match setup.num_players {
+            NumPlayers::Two if total_count != 16 => return None,
+            NumPlayers::Three if total_count != 12 => return None,
+            NumPlayers::Four if total_count != 8 => return None,
+            _ => {}
+        }
+
+        // Encode the setup data into a 32-bit integer
         let num_players_bits = match setup.num_players {
             NumPlayers::Two => 0,
             NumPlayers::Three => 1,
@@ -259,6 +268,24 @@ mod tests {
         }
     }
 
+    fn setup_test_data(counts: [usize; 8], num_players: NumPlayers) -> SetupData {
+        let removals = ALL_AMULET_TYPES
+            .iter()
+            .zip(counts.iter())
+            .map(|(&ty, &count)| AmuletRemoval {
+                amulet_type: ty,
+                count,
+            })
+            .collect::<Vec<_>>()
+            .try_into()
+            .unwrap();
+
+        SetupData {
+            num_players,
+            removals,
+        }
+    }
+
     #[test]
     fn test_full_set() {
         let full_set = AmuletType::full_set();
@@ -343,38 +370,9 @@ mod tests {
     }
 
     // Test cases for AmuletId encoding and decoding
-    fn setup_data(counts: [usize; 8], num_players: NumPlayers) -> SetupData {
-        let amulet_types = [
-            AmuletType::Level01,
-            AmuletType::Level04,
-            AmuletType::Level06,
-            AmuletType::Level08,
-            AmuletType::Level10,
-            AmuletType::Level12,
-            AmuletType::Level16,
-            AmuletType::Level20,
-        ];
-
-        let removals = amulet_types
-            .iter()
-            .zip(counts.iter())
-            .map(|(&ty, &count)| AmuletRemoval {
-                amulet_type: ty,
-                count,
-            })
-            .collect::<Vec<_>>()
-            .try_into()
-            .unwrap();
-
-        SetupData {
-            num_players,
-            removals,
-        }
-    }
-
     #[test]
     fn test_valid_encoding_and_decoding_two_player() {
-        let original = setup_data([4, 3, 2, 1, 3, 1, 1, 1], NumPlayers::Two);
+        let original = setup_test_data([4, 3, 2, 1, 3, 1, 1, 1], NumPlayers::Two);
         /*
         Field	        Value	Bits	Shift	Binary	Bits of bit field
         Num Players 	0	    2	    0	    00	    Bits 0–1 (LSB)
@@ -406,8 +404,7 @@ mod tests {
         assert_eq!(decoded.num_players, original.num_players);
         for i in 0..8 {
             assert_eq!(
-                decoded.removals[i].count,
-                original.removals[i].count,
+                decoded.removals[i].count, original.removals[i].count,
                 "Mismatch at index {i}"
             );
         }
@@ -415,7 +412,7 @@ mod tests {
 
     #[test]
     fn test_valid_encoding_and_decoding_three_player() {
-        let original = setup_data([2, 2, 2, 1, 2, 1, 1, 1], NumPlayers::Three);
+        let original = setup_test_data([2, 2, 2, 1, 2, 1, 1, 1], NumPlayers::Three);
         /*
         Field	        Value	Bits	Shift	Binary	Bits of bit field
         Num Players 	1	    2	    0	    01	    Bits 0–1 (LSB)
@@ -446,8 +443,7 @@ mod tests {
         assert_eq!(decoded.num_players, original.num_players);
         for i in 0..8 {
             assert_eq!(
-                decoded.removals[i].count,
-                original.removals[i].count,
+                decoded.removals[i].count, original.removals[i].count,
                 "Mismatch at index {i}"
             );
         }
@@ -455,7 +451,7 @@ mod tests {
 
     #[test]
     fn test_valid_encoding_and_decoding_four_player() {
-        let original = setup_data([1, 1, 1, 1, 1, 1, 1, 1], NumPlayers::Four);
+        let original = setup_test_data([1, 1, 1, 1, 1, 1, 1, 1], NumPlayers::Four);
         /*
         Field	        Value	Bits	Shift	Binary	Bits of bit field
         Num Players 	2	    2	    0	    10	    Bits 0–1 (LSB)
@@ -486,8 +482,7 @@ mod tests {
         assert_eq!(decoded.num_players, original.num_players);
         for i in 0..8 {
             assert_eq!(
-                decoded.removals[i].count,
-                original.removals[i].count,
+                decoded.removals[i].count, original.removals[i].count,
                 "Mismatch at index {i}"
             );
         }
@@ -496,11 +491,19 @@ mod tests {
     #[test]
     fn test_invalid_counts() {
         // Count too high for Level06 (index 2, max 5)
-        let invalid = setup_data([0, 0, 6, 0, 0, 0, 0, 0], NumPlayers::Two);
+        let invalid = setup_test_data([0, 0, 6, 0, 0, 0, 0, 0], NumPlayers::Two);
         assert!(AmuletId::encode(&invalid).is_none());
 
         // Count too high for Level20 (index 7, max 3)
-        let invalid = setup_data([0, 0, 0, 0, 0, 0, 0, 4], NumPlayers::Two);
+        let invalid = setup_test_data([0, 0, 0, 0, 0, 0, 0, 4], NumPlayers::Two);
+        assert!(AmuletId::encode(&invalid).is_none());
+
+        // Total Count too low for Two Players (should be 16)
+        let invalid = setup_test_data([8, 7, 0, 0, 0, 0, 0, 0], NumPlayers::Two);
+        assert!(AmuletId::encode(&invalid).is_none());
+
+        // Total Count too high for Three Players (should be 12)
+        let invalid = setup_test_data([6, 7, 0, 0, 0, 0, 0, 0], NumPlayers::Two);
         assert!(AmuletId::encode(&invalid).is_none());
     }
 
@@ -509,6 +512,47 @@ mod tests {
         // manipulate bits: set num players to 3 (invalid, because only 0, 1, 2 are valid)
         let id = AmuletId(0b11);
         assert!(id.decode().is_none());
+    }
+
+    #[test]
+    fn test_invalid_count_bits() {
+        /* count to high for Level04
+        Field	        Value	Bits	Shift	Binary	Bits of bit field
+        Num Players 	0	    2	    0	    00	    Bits 0–1 (LSB)
+        Level01	        1	    4	    2	    0001	Bits 2–5
+        Level04	        9	    4	    6	    1001	Bits 6–9
+        Level06	        1	    3	    10	    001	    Bits 10–12
+        Level08	        1	    3	    13	    001	    Bits 13–15
+        Level10	        1	    4	    16	    0001	Bits 16–19
+        Level12	        1	    3	    20	    001	    Bits 20–22
+        Level16	        1	    3	    23	    001	    Bits 23–25
+        Level20	        1	    2	    26	    01	    Bits 26–27 (MSB)
+        --> MSB 01 001 001 0001 001 001 1001 0001 00 LSB
+        --> MSB 0100 1001 0001 0010 0110 0100 0100 LSB
+        --> 0b0100_1001_0001_0010_0110_0100_0100
+        */
+        let invalid: u32 = 0b0100_1001_0001_0010_0110_0100_0100;
+        let invalid = AmuletId(invalid);
+        assert!(invalid.decode().is_none());
+
+        /* total count of 17 to high for two players
+        Field	        Value	Bits	Shift	Binary	Bits of bit field
+        Num Players 	0	    2	    0	    00	    Bits 0–1 (LSB)
+        Level01	        3	    4	    2	    0011	Bits 2–5
+        Level04	        8	    4	    6	    1000	Bits 6–9
+        Level06	        1	    3	    10	    001	    Bits 10–12
+        Level08	        1	    3	    13	    001	    Bits 13–15
+        Level10	        1	    4	    16	    0001	Bits 16–19
+        Level12	        1	    3	    20	    001	    Bits 20–22
+        Level16	        1	    3	    23	    001	    Bits 23–25
+        Level20	        1	    2	    26	    01	    Bits 26–27 (MSB)
+        --> MSB 01 001 001 0001 001 001 1000 0011 00 LSB
+        --> MSB 0100 1001 0001 0010 0110 0000 1100 LSB
+        --> 0b0100_1001_0001_0010_0110_0000_1100
+        */
+        let invalid: u32 = 0b0100_1001_0001_0010_0110_0000_1100;
+        let invalid = AmuletId(invalid);
+        assert!(invalid.decode().is_none());
     }
 
     #[test]
