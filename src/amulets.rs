@@ -156,9 +156,9 @@ impl AmuletType {
 }
 
 #[derive(Debug, Clone, Copy)]
-pub struct AmuletId(u32);
+pub struct SetupId(u32);
 
-impl AmuletId {
+impl SetupId {
     const BIT_LAYOUT: [u32; 8] = [4, 4, 3, 3, 4, 3, 3, 2];
     const MAX_VALUES: [usize; 8] = [8, 8, 5, 4, 8, 4, 5, 3];
 
@@ -183,11 +183,11 @@ impl AmuletId {
         let mut shift = 2;
         for (i, removal) in setup.removals.iter().enumerate() {
             let value = removal.count;
-            if value > AmuletId::MAX_VALUES[i] {
+            if value > SetupId::MAX_VALUES[i] {
                 return None;
             }
             bits |= (value as u32) << shift;
-            shift += AmuletId::BIT_LAYOUT[i];
+            shift += SetupId::BIT_LAYOUT[i];
         }
 
         Some(Self(bits))
@@ -206,15 +206,15 @@ impl AmuletId {
         let mut shift = 2;
         let mut total_count = 0;
         for i in 0..8 {
-            let mask = (1 << AmuletId::BIT_LAYOUT[i]) - 1;
+            let mask = (1 << SetupId::BIT_LAYOUT[i]) - 1;
             let count = ((self.0 >> shift) & mask) as usize;
-            if count > AmuletId::MAX_VALUES[i] {
+            if count > SetupId::MAX_VALUES[i] {
                 // Invalid count for this amulet type
                 return None;
             }
             setup.removals[i].count = count;
             total_count += count;
-            shift += AmuletId::BIT_LAYOUT[i];
+            shift += SetupId::BIT_LAYOUT[i];
         }
 
         // Validate total count against expected values for each player count
@@ -369,7 +369,7 @@ mod tests {
         }
     }
 
-    // Test cases for AmuletId encoding and decoding
+    // Test cases for SetupId encoding and decoding
     #[test]
     fn test_valid_encoding_and_decoding_two_player() {
         let original = setup_test_data([4, 3, 2, 1, 3, 1, 1, 1], NumPlayers::Two);
@@ -389,16 +389,16 @@ mod tests {
         --> 0b0100_1001_0011_0010_1000_1101_0000
         */
         let expected: u32 = 0b0100_1001_0011_0010_1000_1101_0000;
-        let expected = AmuletId(expected);
+        let expected = SetupId(expected);
         let expected_hex = expected.to_hex_string();
 
         // Encode the original setup data
-        let encoded = AmuletId::encode(&original).expect("Should encode");
+        let encoded = SetupId::encode(&original).expect("Should encode");
         let hex = encoded.to_hex_string();
 
         assert_eq!(hex, expected_hex);
 
-        let parsed = AmuletId::from_hex_string(&hex).expect("Should parse hex");
+        let parsed = SetupId::from_hex_string(&hex).expect("Should parse hex");
         let decoded = parsed.decode().expect("Should decode");
 
         assert_eq!(decoded.num_players, original.num_players);
@@ -429,15 +429,15 @@ mod tests {
         --> 0b0100_1001_0010_0010_1000_1000_1001
         */
         let expected: u32 = 0b0100_1001_0010_0010_1000_1000_1001;
-        let expected = AmuletId(expected);
+        let expected = SetupId(expected);
         let expected_hex = expected.to_hex_string();
 
-        let encoded = AmuletId::encode(&original).expect("Should encode");
+        let encoded = SetupId::encode(&original).expect("Should encode");
         let hex = encoded.to_hex_string();
 
         assert_eq!(hex, expected_hex);
 
-        let parsed = AmuletId::from_hex_string(&hex).expect("Should parse hex");
+        let parsed = SetupId::from_hex_string(&hex).expect("Should parse hex");
         let decoded = parsed.decode().expect("Should decode");
 
         assert_eq!(decoded.num_players, original.num_players);
@@ -468,15 +468,15 @@ mod tests {
         --> 0b0100_1001_0001_0010_0100_0100_0110
         */
         let expected: u32 = 0b0100_1001_0001_0010_0100_0100_0110;
-        let expected = AmuletId(expected);
+        let expected = SetupId(expected);
         let expected_hex = expected.to_hex_string();
 
-        let encoded = AmuletId::encode(&original).expect("Should encode");
+        let encoded = SetupId::encode(&original).expect("Should encode");
         let hex = encoded.to_hex_string();
 
         assert_eq!(hex, expected_hex);
 
-        let parsed = AmuletId::from_hex_string(&hex).expect("Should parse hex");
+        let parsed = SetupId::from_hex_string(&hex).expect("Should parse hex");
         let decoded = parsed.decode().expect("Should decode");
 
         assert_eq!(decoded.num_players, original.num_players);
@@ -492,25 +492,25 @@ mod tests {
     fn test_invalid_counts() {
         // Count too high for Level06 (index 2, max 5)
         let invalid = setup_test_data([0, 0, 6, 0, 0, 0, 0, 0], NumPlayers::Two);
-        assert!(AmuletId::encode(&invalid).is_none());
+        assert!(SetupId::encode(&invalid).is_none());
 
         // Count too high for Level20 (index 7, max 3)
         let invalid = setup_test_data([0, 0, 0, 0, 0, 0, 0, 4], NumPlayers::Two);
-        assert!(AmuletId::encode(&invalid).is_none());
+        assert!(SetupId::encode(&invalid).is_none());
 
         // Total Count too low for Two Players (should be 16)
         let invalid = setup_test_data([8, 7, 0, 0, 0, 0, 0, 0], NumPlayers::Two);
-        assert!(AmuletId::encode(&invalid).is_none());
+        assert!(SetupId::encode(&invalid).is_none());
 
         // Total Count too high for Three Players (should be 12)
         let invalid = setup_test_data([6, 7, 0, 0, 0, 0, 0, 0], NumPlayers::Two);
-        assert!(AmuletId::encode(&invalid).is_none());
+        assert!(SetupId::encode(&invalid).is_none());
     }
 
     #[test]
     fn test_invalid_player_bits() {
         // manipulate bits: set num players to 3 (invalid, because only 0, 1, 2 are valid)
-        let id = AmuletId(0b11);
+        let id = SetupId(0b11);
         assert!(id.decode().is_none());
     }
 
@@ -532,7 +532,7 @@ mod tests {
         --> 0b0100_1001_0001_0010_0110_0100_0100
         */
         let invalid: u32 = 0b0100_1001_0001_0010_0110_0100_0100;
-        let invalid = AmuletId(invalid);
+        let invalid = SetupId(invalid);
         assert!(invalid.decode().is_none());
 
         /* total count of 17 to high for two players
@@ -551,16 +551,16 @@ mod tests {
         --> 0b0100_1001_0001_0010_0110_0000_1100
         */
         let invalid: u32 = 0b0100_1001_0001_0010_0110_0000_1100;
-        let invalid = AmuletId(invalid);
+        let invalid = SetupId(invalid);
         assert!(invalid.decode().is_none());
     }
 
     #[test]
     fn test_invalid_hex_string() {
         // too long
-        assert!(AmuletId::from_hex_string("12345678").is_none());
+        assert!(SetupId::from_hex_string("12345678").is_none());
 
         // invalid chars
-        assert!(AmuletId::from_hex_string("GHIJKL").is_none());
+        assert!(SetupId::from_hex_string("GHIJKL").is_none());
     }
 }

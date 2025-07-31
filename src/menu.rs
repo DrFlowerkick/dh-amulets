@@ -1,5 +1,6 @@
 // menu and menu button in header
 
+use crate::setup::SetUpId;
 use crate::themes::ThemeSelector;
 use leptos::prelude::*;
 
@@ -30,6 +31,8 @@ pub fn MenuButton() -> impl IntoView {
                 <h3 class="text-lg font-semibold mb-1">"Menü"</h3>
                 <hr role="separator" class="my-2 border-t border-primary" />
                 <ThemeSelector />
+                <hr role="separator" class="my-2 border-t border-primary" />
+                <SetUpId />
             </ul>
         </div>
     }

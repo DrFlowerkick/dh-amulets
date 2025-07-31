@@ -1,6 +1,6 @@
 // setup route of app
 
-use crate::amulets::{NumPlayers, SetupData};
+use crate::amulets::{NumPlayers, SetupData, SetupId};
 use leptos::prelude::*;
 use leptos_router::{
     hooks::{use_navigate, use_params},
@@ -13,7 +13,6 @@ pub struct ParamNumPlayers {
     pub num: Option<usize>,
 }
 
-/// Renders the home page of your application.
 #[component]
 pub fn SetUp() -> impl IntoView {
     // get number of players from url
@@ -111,5 +110,31 @@ pub fn SetUp() -> impl IntoView {
                 }
             }}
         </Show>
+    }
+}
+
+#[component]
+pub fn SetUpId() -> impl IntoView {
+    let (setup_id, set_setup_id) = signal(None::<String>);
+
+    let setup_data =
+        use_context::<RwSignal<Option<SetupData>>>().expect("SetupData context not found");
+
+    Effect::new(move || {
+        if let Some(setup_data) = setup_data.get() {
+            if let Some(id) = SetupId::encode(&setup_data) {
+                set_setup_id.set(Some(id.to_hex_string()));
+            }
+        }
+    });
+
+    view! {
+        <div class="setup-id-container">
+            <p class="text-base font-semibold mb-1">
+                "Setup ID: "<span class="text-primary" data-testid="setup-id">
+                    {move || setup_id.get().unwrap_or("No Setup ID".to_string())}
+                </span>
+            </p>
+        </div>
     }
 }
