@@ -6,6 +6,7 @@ use leptos_router::{
     hooks::{use_navigate, use_params},
     params::Params,
 };
+use web_sys::window;
 
 #[derive(Params, PartialEq, Clone, Debug)]
 pub struct ParamNumPlayers {
@@ -128,13 +129,32 @@ pub fn SetUpId() -> impl IntoView {
         }
     });
 
+    let copy_to_clipboard = move || {
+        if let Some(id) = setup_id.get() {
+            let clipboard = window()
+                .expect("should have a Window")
+                .navigator()
+                .clipboard();
+
+            let _ = clipboard.write_text(&id);
+        }
+    };
+
     view! {
-        <div class="setup-id-container">
+        <div class="setup-id-container flex items-center gap-2 align-middle">
             <p class="text-base font-semibold mb-1">
                 "Setup ID: "<span class="text-primary" data-testid="setup-id">
                     {move || setup_id.get().unwrap_or("No Setup ID".to_string())}
                 </span>
             </p>
+
+            <button
+                on:click=move |_| copy_to_clipboard()
+                class="ml-2 text-base leading-none transition duration-200 cursor-pointer"
+                aria-label="Copy to clipboard"
+            >
+                "📋"
+            </button>
         </div>
     }
 }
