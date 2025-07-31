@@ -117,6 +117,7 @@ pub fn SetUp() -> impl IntoView {
 #[component]
 pub fn SetUpId() -> impl IntoView {
     let (setup_id, set_setup_id) = signal(None::<String>);
+    let (show_copied_toast, set_show_copied_toast) = signal(false);
 
     let setup_data =
         use_context::<RwSignal<Option<SetupData>>>().expect("SetupData context not found");
@@ -137,24 +138,54 @@ pub fn SetUpId() -> impl IntoView {
                 .clipboard();
 
             let _ = clipboard.write_text(&id);
+
+            // show toast
+            set_show_copied_toast.set(true);
+            // Hide after 2 seconds
+            set_timeout(
+                move || {
+                    set_show_copied_toast.set(false);
+                },
+                std::time::Duration::from_secs(2),
+            );
         }
     };
 
     view! {
-        <div class="setup-id-container flex items-center gap-2 align-middle">
+        <div class="setup-id-container flex items-center gap-2">
             <p class="text-base font-semibold mb-1">
                 "Setup ID: "<span class="text-primary" data-testid="setup-id">
                     {move || setup_id.get().unwrap_or("No Setup ID".to_string())}
                 </span>
             </p>
-
-            <button
-                on:click=move |_| copy_to_clipboard()
-                class="ml-2 text-base leading-none transition duration-200 cursor-pointer"
-                aria-label="Copy to clipboard"
-            >
-                "📋"
-            </button>
+            <div class="relative inline-block">
+                <button
+                    on:click=move |_| copy_to_clipboard()
+                    class="ml-2 text-base leading-none transition duration-200 cursor-pointer"
+                    aria-label="Copy to clipboard"
+                >
+                    <span
+                        class="inline-block relative bottom-[5px]"
+                        class:animate-bounce=move || show_copied_toast.get()
+                        class:animate-none=move || !show_copied_toast.get()
+                        data-testid="clipboard"
+                    >
+                        "📋"
+                    </span>
+                </button>
+                <div
+                    class="absolute -top-7 left-1/2 -translate-x-1/2 z-50
+                    text-base px-3 py-1 rounded shadow 
+                    bg-[color:var(--b1)/50%] backdrop-blur-sm
+                    transition-opacity duration-1000 ease-in-out
+                    pointer-events-none select-none"
+                    class:opacity-100=move || show_copied_toast.get()
+                    class:opacity-0=move || !show_copied_toast.get()
+                    data-testid="copy-toast"
+                >
+                    "✔Kopiert"
+                </div>
+            </div>
         </div>
     }
 }
