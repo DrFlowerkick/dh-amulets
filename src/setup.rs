@@ -19,7 +19,8 @@ pub fn SetUp() -> impl IntoView {
     // get number of players from url
     let params = use_params::<ParamNumPlayers>();
 
-    let setup_data = RwSignal::new(None::<SetupData>);
+    let setup_data =
+        use_context::<RwSignal<Option<SetupData>>>().expect("SetupData context not found");
 
     let navigate = use_navigate();
 
