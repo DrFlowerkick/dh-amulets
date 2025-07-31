@@ -9,9 +9,13 @@ test("Open menu at click on Hamburger button", async ({ page }) => {
   await menuButton.click();
 
   // check menu text
-  await expect(page.getByRole('heading', { name: 'Menü', level: 3 })).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "Menü", level: 3 })
+  ).toBeVisible();
 
-  // check visuel seperator
-  const separator = page.locator('[role="separator"]');
-  await expect(separator).toBeVisible();
+  // check visual separators
+  const separators = page.getByRole("separator");
+  await expect(separators).toHaveCount(2);
+  await expect(separators.nth(0)).toBeVisible();
+  await expect(separators.nth(1)).toBeVisible();
 });

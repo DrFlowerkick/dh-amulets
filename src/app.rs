@@ -1,4 +1,5 @@
 // central app definitions
+use crate::amulets::SetupData;
 use crate::home::HomePage;
 use crate::menu::MenuButton;
 use crate::setup::SetUp;
@@ -61,6 +62,10 @@ pub fn App() -> impl IntoView {
 
     // provide theme context
     provide_theme_context();
+
+    // provide setup data context
+    let setup_data = RwSignal::new(None::<SetupData>);
+    provide_context(setup_data);
 
     view! {
         // sets the document title

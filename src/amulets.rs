@@ -4,7 +4,7 @@ use crate::setup::ParamNumPlayers;
 use rand::{rng, seq::IndexedRandom};
 use std::fmt;
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 pub enum NumPlayers {
     Two,
     Three,
@@ -155,6 +155,89 @@ impl AmuletType {
     }
 }
 
+#[derive(Debug, Clone, Copy)]
+pub struct SetupId(u32);
+
+impl SetupId {
+    const BIT_LAYOUT: [u32; 8] = [4, 4, 3, 3, 4, 3, 3, 2];
+    const MAX_VALUES: [usize; 8] = [8, 8, 5, 4, 8, 4, 5, 3];
+
+    pub fn encode(setup: &SetupData) -> Option<Self> {
+        let total_count = setup.removals.iter().map(|r| r.count).sum::<usize>();
+        match setup.num_players {
+            NumPlayers::Two if total_count != 16 => return None,
+            NumPlayers::Three if total_count != 12 => return None,
+            NumPlayers::Four if total_count != 8 => return None,
+            _ => {}
+        }
+
+        // Encode the setup data into a 32-bit integer
+        let num_players_bits = match setup.num_players {
+            NumPlayers::Two => 0,
+            NumPlayers::Three => 1,
+            NumPlayers::Four => 2,
+        };
+
+        let mut bits = num_players_bits;
+
+        let mut shift = 2;
+        for (i, removal) in setup.removals.iter().enumerate() {
+            let value = removal.count;
+            if value > SetupId::MAX_VALUES[i] {
+                return None;
+            }
+            bits |= (value as u32) << shift;
+            shift += SetupId::BIT_LAYOUT[i];
+        }
+
+        Some(Self(bits))
+    }
+
+    pub fn decode(&self) -> Option<SetupData> {
+        let num_players = match self.0 & 0b11 {
+            0 => NumPlayers::Two,
+            1 => NumPlayers::Three,
+            2 => NumPlayers::Four,
+            _ => return None, // Invalid player count
+        };
+
+        let mut setup = SetupData::new(num_players.clone());
+
+        let mut shift = 2;
+        let mut total_count = 0;
+        for i in 0..8 {
+            let mask = (1 << SetupId::BIT_LAYOUT[i]) - 1;
+            let count = ((self.0 >> shift) & mask) as usize;
+            if count > SetupId::MAX_VALUES[i] {
+                // Invalid count for this amulet type
+                return None;
+            }
+            setup.removals[i].count = count;
+            total_count += count;
+            shift += SetupId::BIT_LAYOUT[i];
+        }
+
+        // Validate total count against expected values for each player count
+        match num_players {
+            NumPlayers::Two if total_count != 16 => None,
+            NumPlayers::Three if total_count != 12 => None,
+            NumPlayers::Four if total_count != 8 => None,
+            _ => Some(setup),
+        }
+    }
+
+    pub fn to_hex_string(&self) -> String {
+        format!("{:07X}", self.0)
+    }
+
+    pub fn from_hex_string(s: &str) -> Option<Self> {
+        if s.len() > 7 {
+            return None;
+        }
+        u32::from_str_radix(s, 16).ok().map(Self)
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -182,6 +265,24 @@ mod tests {
                 AmuletType::Level16 => 5,
                 AmuletType::Level20 => 3,
             }
+        }
+    }
+
+    fn setup_test_data(counts: [usize; 8], num_players: NumPlayers) -> SetupData {
+        let removals = ALL_AMULET_TYPES
+            .iter()
+            .zip(counts.iter())
+            .map(|(&ty, &count)| AmuletRemoval {
+                amulet_type: ty,
+                count,
+            })
+            .collect::<Vec<_>>()
+            .try_into()
+            .unwrap();
+
+        SetupData {
+            num_players,
+            removals,
         }
     }
 
@@ -266,5 +367,200 @@ mod tests {
                     <= amulet.max_num()
             );
         }
+    }
+
+    // Test cases for SetupId encoding and decoding
+    #[test]
+    fn test_valid_encoding_and_decoding_two_player() {
+        let original = setup_test_data([4, 3, 2, 1, 3, 1, 1, 1], NumPlayers::Two);
+        /*
+        Field	        Value	Bits	Shift	Binary	Bits of bit field
+        Num Players 	0	    2	    0	    00	    Bits 0–1 (LSB)
+        Level01	        4	    4	    2	    0100	Bits 2–5
+        Level04	        3	    4	    6	    0011	Bits 6–9
+        Level06	        2	    3	    10	    010	    Bits 10–12
+        Level08	        1	    3	    13	    001	    Bits 13–15
+        Level10	        3	    4	    16	    0011	Bits 16–19
+        Level12	        1	    3	    20	    001	    Bits 20–22
+        Level16	        1	    3	    23	    001	    Bits 23–25
+        Level20	        1	    2	    26	    01	    Bits 26–27 (MSB)
+        --> MSB 01 001 001 0011 001 010 0011 0100 00 LSB
+        --> MSB 0100 1001 0011 0010 1000 1101 0000 LSB
+        --> 0b0100_1001_0011_0010_1000_1101_0000
+        */
+        let expected: u32 = 0b0100_1001_0011_0010_1000_1101_0000;
+        let expected = SetupId(expected);
+        let expected_hex = expected.to_hex_string();
+
+        // Encode the original setup data
+        let encoded = SetupId::encode(&original).expect("Should encode");
+        let hex = encoded.to_hex_string();
+
+        assert_eq!(hex, expected_hex);
+
+        let parsed = SetupId::from_hex_string(&hex).expect("Should parse hex");
+        let decoded = parsed.decode().expect("Should decode");
+
+        assert_eq!(decoded.num_players, original.num_players);
+        for i in 0..8 {
+            assert_eq!(
+                decoded.removals[i].count, original.removals[i].count,
+                "Mismatch at index {i}"
+            );
+        }
+    }
+
+    #[test]
+    fn test_valid_encoding_and_decoding_three_player() {
+        let original = setup_test_data([2, 2, 2, 1, 2, 1, 1, 1], NumPlayers::Three);
+        /*
+        Field	        Value	Bits	Shift	Binary	Bits of bit field
+        Num Players 	1	    2	    0	    01	    Bits 0–1 (LSB)
+        Level01	        2	    4	    2	    0010	Bits 2–5
+        Level04	        2	    4	    6	    0010	Bits 6–9
+        Level06	        2	    3	    10	    010	    Bits 10–12
+        Level08	        1	    3	    13	    001	    Bits 13–15
+        Level10	        2	    4	    16	    0010	Bits 16–19
+        Level12	        1	    3	    20	    001	    Bits 20–22
+        Level16	        1	    3	    23	    001	    Bits 23–25
+        Level20	        1	    2	    26	    01	    Bits 26–27 (MSB)
+        --> MSB 01 001 001 0010 001 010 0010 0010 01 LSB
+        --> MSB 0100 1001 0010 0010 1000 1000 1001 LSB
+        --> 0b0100_1001_0010_0010_1000_1000_1001
+        */
+        let expected: u32 = 0b0100_1001_0010_0010_1000_1000_1001;
+        let expected = SetupId(expected);
+        let expected_hex = expected.to_hex_string();
+
+        let encoded = SetupId::encode(&original).expect("Should encode");
+        let hex = encoded.to_hex_string();
+
+        assert_eq!(hex, expected_hex);
+
+        let parsed = SetupId::from_hex_string(&hex).expect("Should parse hex");
+        let decoded = parsed.decode().expect("Should decode");
+
+        assert_eq!(decoded.num_players, original.num_players);
+        for i in 0..8 {
+            assert_eq!(
+                decoded.removals[i].count, original.removals[i].count,
+                "Mismatch at index {i}"
+            );
+        }
+    }
+
+    #[test]
+    fn test_valid_encoding_and_decoding_four_player() {
+        let original = setup_test_data([1, 1, 1, 1, 1, 1, 1, 1], NumPlayers::Four);
+        /*
+        Field	        Value	Bits	Shift	Binary	Bits of bit field
+        Num Players 	2	    2	    0	    10	    Bits 0–1 (LSB)
+        Level01	        1	    4	    2	    0101	Bits 2–5
+        Level04	        1	    4	    6	    0001	Bits 6–9
+        Level06	        1	    3	    10	    001	    Bits 10–12
+        Level08	        1	    3	    13	    001	    Bits 13–15
+        Level10	        1	    4	    16	    0001	Bits 16–19
+        Level12	        1	    3	    20	    001	    Bits 20–22
+        Level16	        1	    3	    23	    001	    Bits 23–25
+        Level20	        1	    2	    26	    01	    Bits 26–27 (MSB)
+        --> MSB 01 001 001 0001 001 001 0001 0001 10 LSB
+        --> MSB 0100 1001 0001 0010 0100 0100 0110 LSB
+        --> 0b0100_1001_0001_0010_0100_0100_0110
+        */
+        let expected: u32 = 0b0100_1001_0001_0010_0100_0100_0110;
+        let expected = SetupId(expected);
+        let expected_hex = expected.to_hex_string();
+
+        let encoded = SetupId::encode(&original).expect("Should encode");
+        let hex = encoded.to_hex_string();
+
+        assert_eq!(hex, expected_hex);
+
+        let parsed = SetupId::from_hex_string(&hex).expect("Should parse hex");
+        let decoded = parsed.decode().expect("Should decode");
+
+        assert_eq!(decoded.num_players, original.num_players);
+        for i in 0..8 {
+            assert_eq!(
+                decoded.removals[i].count, original.removals[i].count,
+                "Mismatch at index {i}"
+            );
+        }
+    }
+
+    #[test]
+    fn test_invalid_counts() {
+        // Count too high for Level06 (index 2, max 5)
+        let invalid = setup_test_data([0, 0, 6, 0, 0, 0, 0, 0], NumPlayers::Two);
+        assert!(SetupId::encode(&invalid).is_none());
+
+        // Count too high for Level20 (index 7, max 3)
+        let invalid = setup_test_data([0, 0, 0, 0, 0, 0, 0, 4], NumPlayers::Two);
+        assert!(SetupId::encode(&invalid).is_none());
+
+        // Total Count too low for Two Players (should be 16)
+        let invalid = setup_test_data([8, 7, 0, 0, 0, 0, 0, 0], NumPlayers::Two);
+        assert!(SetupId::encode(&invalid).is_none());
+
+        // Total Count too high for Three Players (should be 12)
+        let invalid = setup_test_data([6, 7, 0, 0, 0, 0, 0, 0], NumPlayers::Two);
+        assert!(SetupId::encode(&invalid).is_none());
+    }
+
+    #[test]
+    fn test_invalid_player_bits() {
+        // manipulate bits: set num players to 3 (invalid, because only 0, 1, 2 are valid)
+        let id = SetupId(0b11);
+        assert!(id.decode().is_none());
+    }
+
+    #[test]
+    fn test_invalid_count_bits() {
+        /* count to high for Level04
+        Field	        Value	Bits	Shift	Binary	Bits of bit field
+        Num Players 	0	    2	    0	    00	    Bits 0–1 (LSB)
+        Level01	        1	    4	    2	    0001	Bits 2–5
+        Level04	        9	    4	    6	    1001	Bits 6–9
+        Level06	        1	    3	    10	    001	    Bits 10–12
+        Level08	        1	    3	    13	    001	    Bits 13–15
+        Level10	        1	    4	    16	    0001	Bits 16–19
+        Level12	        1	    3	    20	    001	    Bits 20–22
+        Level16	        1	    3	    23	    001	    Bits 23–25
+        Level20	        1	    2	    26	    01	    Bits 26–27 (MSB)
+        --> MSB 01 001 001 0001 001 001 1001 0001 00 LSB
+        --> MSB 0100 1001 0001 0010 0110 0100 0100 LSB
+        --> 0b0100_1001_0001_0010_0110_0100_0100
+        */
+        let invalid: u32 = 0b0100_1001_0001_0010_0110_0100_0100;
+        let invalid = SetupId(invalid);
+        assert!(invalid.decode().is_none());
+
+        /* total count of 17 to high for two players
+        Field	        Value	Bits	Shift	Binary	Bits of bit field
+        Num Players 	0	    2	    0	    00	    Bits 0–1 (LSB)
+        Level01	        3	    4	    2	    0011	Bits 2–5
+        Level04	        8	    4	    6	    1000	Bits 6–9
+        Level06	        1	    3	    10	    001	    Bits 10–12
+        Level08	        1	    3	    13	    001	    Bits 13–15
+        Level10	        1	    4	    16	    0001	Bits 16–19
+        Level12	        1	    3	    20	    001	    Bits 20–22
+        Level16	        1	    3	    23	    001	    Bits 23–25
+        Level20	        1	    2	    26	    01	    Bits 26–27 (MSB)
+        --> MSB 01 001 001 0001 001 001 1000 0011 00 LSB
+        --> MSB 0100 1001 0001 0010 0110 0000 1100 LSB
+        --> 0b0100_1001_0001_0010_0110_0000_1100
+        */
+        let invalid: u32 = 0b0100_1001_0001_0010_0110_0000_1100;
+        let invalid = SetupId(invalid);
+        assert!(invalid.decode().is_none());
+    }
+
+    #[test]
+    fn test_invalid_hex_string() {
+        // too long
+        assert!(SetupId::from_hex_string("12345678").is_none());
+
+        // invalid chars
+        assert!(SetupId::from_hex_string("GHIJKL").is_none());
     }
 }
