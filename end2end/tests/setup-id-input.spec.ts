@@ -22,7 +22,7 @@ test.describe("Setup ID input behavior", () => {
     const input = page.getByLabel("Setup ID Input");
     await input.fill("XYZ123!");
     await input.blur();
-    await expect(input).toHaveClass(/border-red-500/);
+    await expect(input).toHaveClass(/text-red-500/);
   });
 
   test("Escape restores old value", async ({ page }) => {

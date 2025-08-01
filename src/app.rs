@@ -1,8 +1,7 @@
 // central app definitions
-use crate::amulets::SetupData;
 use crate::home::HomePage;
 use crate::menu::MenuButton;
-use crate::setup::SetUp;
+use crate::setup::{SetUp, provide_setup_context};
 use crate::themes::provide_theme_context;
 use leptos::prelude::*;
 use leptos_meta::{MetaTags, Stylesheet, Title, provide_meta_context};
@@ -64,8 +63,7 @@ pub fn App() -> impl IntoView {
     provide_theme_context();
 
     // provide setup data context
-    let setup_data = RwSignal::new(None::<SetupData>);
-    provide_context(setup_data);
+    provide_setup_context();
 
     view! {
         // sets the document title
