@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.6.0](https://github.com/DrFlowerkick/dh-amulets/compare/v0.5.0...v0.6.0) (2025-08-01)
+
+
+### Features
+
+* :sparkles: First implementation of inserting and applyig a setup id ([b313b79](https://github.com/DrFlowerkick/dh-amulets/commit/b313b795f90c5c6877c2cbdc46a0d385b145f3f9))
+* :sparkles: Insert Setup ID with fully functional reactive behaviour ([b313b79](https://github.com/DrFlowerkick/dh-amulets/commit/b313b795f90c5c6877c2cbdc46a0d385b145f3f9))
+* :sparkles: Replacing text of button to select theme with an icon ([fdbf133](https://github.com/DrFlowerkick/dh-amulets/commit/fdbf1333f67542c01afae09511a1a0422b1aaf71))
+* Feat_insert_setup_id ([#84](https://github.com/DrFlowerkick/dh-amulets/issues/84)) ([b313b79](https://github.com/DrFlowerkick/dh-amulets/commit/b313b795f90c5c6877c2cbdc46a0d385b145f3f9))
+* Replace_setup_button_with_icon ([#82](https://github.com/DrFlowerkick/dh-amulets/issues/82)) ([fdbf133](https://github.com/DrFlowerkick/dh-amulets/commit/fdbf1333f67542c01afae09511a1a0422b1aaf71))
+
 ## [0.5.0](https://github.com/DrFlowerkick/dh-amulets/compare/v0.4.2...v0.5.0) (2025-08-01)
 
 
