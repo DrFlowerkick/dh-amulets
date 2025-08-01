@@ -222,9 +222,7 @@ pub fn SetUpId() -> impl IntoView {
         match ev.key().as_str() {
             "Enter" => {
                 if valid_id.get() {
-                    // accept entry
-                    //let id = event_target_value(&ev);
-                    //apply_id(&id);
+                    //apply_id(&setup_id.get());
                     if let Some(input) = input_ref.get() {
                         input.blur().unwrap_or_default(); // blur input on Enter
                     }
@@ -253,8 +251,7 @@ pub fn SetUpId() -> impl IntoView {
     let check_blur = move |_| {
         // on blur, if valid, apply the ID
         if valid_id.get() {
-            let id = setup_id.get();
-            apply_id(&id);
+            apply_id(&setup_id.get());
         } else {
             // reset to previous valid ID
             reset_id();
