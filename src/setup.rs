@@ -152,7 +152,7 @@ pub fn SetUpId() -> impl IntoView {
     };
 
     view! {
-        <div class="setup-id-container flex items-center gap-2">
+        <div class="flex items-center gap-2">
             <p class="text-base font-semibold mb-1">
                 "Setup ID: "<span class="text-primary" data-testid="setup-id">
                     {move || setup_id.get().unwrap_or("No Setup ID".to_string())}
