@@ -21,6 +21,7 @@ test.describe("Setup ID input behavior", () => {
   test("shows red border on invalid input", async ({ page }) => {
     const input = page.getByLabel("Setup ID Input");
     await input.fill("XYZ123!");
+    await expect(input).toHaveValue("XYZ123!");
     await input.blur();
     await expect(input).toHaveClass(/text-red-500/);
   });
@@ -30,6 +31,7 @@ test.describe("Setup ID input behavior", () => {
     const original = await input.inputValue();
 
     await input.fill("INVALID");
+    await expect(input).toHaveValue("INVALID");
     await input.press("Escape");
 
     await expect(input).toHaveValue(original);
@@ -40,6 +42,7 @@ test.describe("Setup ID input behavior", () => {
     const original = await input.inputValue();
 
     await input.fill("!!!INVALID!!!");
+    await expect(input).toHaveValue("!!!INVALID!!!");
     await input.press("Enter");
 
     // Value stays unchanged (no restore, but also no navigation)
@@ -52,6 +55,7 @@ test.describe("Setup ID input behavior", () => {
     const original = await input.inputValue();
 
     await input.fill("XXX_BAD_ID");
+    await expect(input).toHaveValue("XXX_BAD_ID");
     await input.press("Tab");
 
     await expect(input).toHaveValue(original);
@@ -61,25 +65,26 @@ test.describe("Setup ID input behavior", () => {
     const input = page.getByLabel("Setup ID Input");
 
     await input.fill(validId);
+    await expect(input).toHaveValue(validId);
     await input.press("Enter");
 
     await expect(page).toHaveURL(new RegExp(`http://localhost:3000/setup/${expectedPlayers}`));
 
     const amuletLevel01 = page.getByTestId('current-level-01');
-    await expect(amuletLevel01).toHaveValue(expectedLevel01);
+    await expect(amuletLevel01).toHaveText(expectedLevel01);
     const amuletLevel04 = page.getByTestId('current-level-04');
-    await expect(amuletLevel04).toHaveValue(expectedLevel04);
+    await expect(amuletLevel04).toHaveText(expectedLevel04);
     const amuletLevel06 = page.getByTestId('current-level-06');
-    await expect(amuletLevel06).toHaveValue(expectedLevel06);
+    await expect(amuletLevel06).toHaveText(expectedLevel06);
     const amuletLevel08 = page.getByTestId('current-level-08');
-    await expect(amuletLevel08).toHaveValue(expectedLevel08);
+    await expect(amuletLevel08).toHaveText(expectedLevel08);
     const amuletLevel10 = page.getByTestId('current-level-10');
-    await expect(amuletLevel10).toHaveValue(expectedLevel10);
+    await expect(amuletLevel10).toHaveText(expectedLevel10);
     const amuletLevel12 = page.getByTestId('current-level-12');
-    await expect(amuletLevel12).toHaveValue(expectedLevel12);
+    await expect(amuletLevel12).toHaveText(expectedLevel12);
     const amuletLevel16 = page.getByTestId('current-level-16');
-    await expect(amuletLevel16).toHaveValue(expectedLevel16);
+    await expect(amuletLevel16).toHaveText(expectedLevel16);
     const amuletLevel20 = page.getByTestId('current-level-20');
-    await expect(amuletLevel20).toHaveValue(expectedLevel20);
+    await expect(amuletLevel20).toHaveText(expectedLevel20);
   });
 });

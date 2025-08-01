@@ -153,6 +153,19 @@ impl AmuletType {
             AmuletType::Level20 => "Amulet Level 20",
         }
     }
+
+    pub const fn test_id(&self) -> &'static str {
+        match self {
+            AmuletType::Level01 => "current-level-01",
+            AmuletType::Level04 => "current-level-04",
+            AmuletType::Level06 => "current-level-06",
+            AmuletType::Level08 => "current-level-08",
+            AmuletType::Level10 => "current-level-10",
+            AmuletType::Level12 => "current-level-12",
+            AmuletType::Level16 => "current-level-16",
+            AmuletType::Level20 => "current-level-20",
+        }
+    }
 }
 
 #[derive(Debug, Clone, Copy)]

@@ -108,7 +108,7 @@ pub fn HomePage() -> impl IntoView {
         <div class="text-base text-content mb-2 space-y-2">
             <p>
                 "Du kannst verschiedene Themen für "<strong>"Drachenhüter Amulett Setup"</strong>
-                " auswählen. Probiere sie einfach aus. Clicke dazu den "<em>"Menü"</em>
+                " auswählen. Probiere sie einfach aus. Klicke dazu den "<em>"Menü"</em>
                 " Button oben rechts."
             </p>
         </div>
