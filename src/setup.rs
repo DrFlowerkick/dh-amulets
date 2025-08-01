@@ -1,12 +1,21 @@
 // setup route of app
 
 use crate::amulets::{NumPlayers, SetupData, SetupId};
-use leptos::prelude::*;
+use crate::context::InputIdSetup;
+use leptos::{
+    ev::{Event, KeyboardEvent},
+    prelude::*,
+    wasm_bindgen::JsCast,
+};
 use leptos_router::{
     hooks::{use_navigate, use_params},
     params::Params,
 };
-use web_sys::window;
+use web_sys::{
+    HtmlElement,
+    js_sys::{Function, Reflect},
+    window,
+};
 
 #[derive(Params, PartialEq, Clone, Debug)]
 pub struct ParamNumPlayers {
@@ -22,6 +31,9 @@ pub fn SetUp() -> impl IntoView {
     let setup_data =
         use_context::<RwSignal<Option<SetupData>>>().expect("SetupData context not found");
 
+    let input_id_setup =
+        use_context::<RwSignal<InputIdSetup>>().expect("InputIdSetup context not found");
+
     let navigate = use_navigate();
 
     let parse_params = move |_| match params.get() {
@@ -32,6 +44,10 @@ pub fn SetUp() -> impl IntoView {
             Some(num) => {
                 if !(2..=4).contains(&num) {
                     navigate("/setup/2", Default::default());
+                } else if input_id_setup.read_untracked().0 {
+                    // if input_id_setup is true, we do not set the setup_data
+                    // because it is set by the SetUpId component
+                    input_id_setup.set(InputIdSetup(false));
                 } else {
                     let np = NumPlayers::from(np);
                     setup_data.set(Some(SetupData::setup(np)));
@@ -92,8 +108,9 @@ pub fn SetUp() -> impl IntoView {
                             each=move || setup.removals.clone()
                             key=|removal| (removal.amulet_type, removal.count)
                             children=move |removal| {
+                                let test_id = removal.amulet_type.test_id();
                                 view! {
-                                    <div class="amulet-cell">
+                                    <div class="amulet-cell" data-testid=test_id>
                                         <p class="text-xl pr-2 font-semibold text-base-content">
                                             <strong>{removal.count}</strong>
                                             "x"
@@ -116,52 +133,157 @@ pub fn SetUp() -> impl IntoView {
 
 #[component]
 pub fn SetUpId() -> impl IntoView {
-    let (setup_id, set_setup_id) = signal(None::<String>);
+    let setup_id = RwSignal::new(String::from("NoSetup"));
+    let (valid_id, set_valid_id) = signal(true);
     let (show_copied_toast, set_show_copied_toast) = signal(false);
 
     let setup_data =
         use_context::<RwSignal<Option<SetupData>>>().expect("SetupData context not found");
 
-    Effect::new(move || {
-        if let Some(setup_data) = setup_data.get() {
-            if let Some(id) = SetupId::encode(&setup_data) {
-                set_setup_id.set(Some(id.to_hex_string()));
-            }
-        }
-    });
+    let input_id_setup =
+        use_context::<RwSignal<InputIdSetup>>().expect("InputIdSetup context not found");
+
+    let menu_ref =
+        use_context::<NodeRef<leptos::html::Ul>>().expect("MenuButton: menu_ref context not found");
 
     let copy_to_clipboard = move || {
-        if let Some(id) = setup_id.get() {
-            let clipboard = window()
-                .expect("should have a Window")
-                .navigator()
-                .clipboard();
+        let id = setup_id.get();
+        let clipboard = window()
+            .expect("should have a Window")
+            .navigator()
+            .clipboard();
 
-            let _ = clipboard.write_text(&id);
+        let _ = clipboard.write_text(&id);
 
-            // show toast
-            set_show_copied_toast.set(true);
-            // Hide after 2 seconds
-            set_timeout(
-                move || {
-                    set_show_copied_toast.set(false);
-                },
-                std::time::Duration::from_secs(2),
-            );
+        // show toast
+        set_show_copied_toast.set(true);
+        // Hide after 2 seconds
+        set_timeout(
+            move || {
+                set_show_copied_toast.set(false);
+            },
+            std::time::Duration::from_secs(2),
+        );
+    };
+
+    let check_input = move |ev: Event| {
+        let input = event_target_value(&ev);
+        if input == "NoSetup" {
+            set_valid_id.set(true);
+            setup_id.set("NoSetup".to_string());
+            return;
+        }
+        setup_id.set(input.clone());
+        if let Some(hex_is_valid) = SetupId::from_hex_string(&input) {
+            let is_valid = hex_is_valid.decode().is_some();
+            set_valid_id.set(is_valid);
+        } else {
+            set_valid_id.set(false);
         }
     };
 
+    let reset_id = move || {
+        // reset input to previous valid ID
+        match setup_data.get() {
+            Some(setup) => match SetupId::encode(&setup) {
+                Some(id) => {
+                    setup_id.set(id.to_hex_string());
+                    set_valid_id.set(true);
+                }
+                None => {
+                    set_valid_id.set(false);
+                }
+            },
+            None => {
+                setup_id.set("NoSetup".to_string());
+            }
+        }
+    };
+
+    let apply_id = move |id: &str| {
+        let setup = SetupId::from_hex_string(id)
+            .expect("Expecting valid id")
+            .decode()
+            .expect("Expecting valid setup data");
+        let route = match setup.num_players {
+            NumPlayers::Two => "/setup/2",
+            NumPlayers::Three => "/setup/3",
+            NumPlayers::Four => "/setup/4",
+        };
+        setup_data.set(Some(setup));
+        input_id_setup.set(InputIdSetup(true));
+        let navigate = use_navigate();
+        navigate(route, Default::default());
+    };
+
+    let input_ref: NodeRef<leptos::html::Input> = NodeRef::new();
+
+    let check_keydown = move |ev: KeyboardEvent| {
+        match ev.key().as_str() {
+            "Enter" => {
+                if valid_id.get() {
+                    //apply_id(&setup_id.get());
+                    if let Some(input) = input_ref.get() {
+                        input.blur().unwrap_or_default(); // blur input on Enter
+                    }
+                    if let Some(node) = menu_ref.get() {
+                        // Cast to HtmlElement
+                        let el = node.unchecked_ref::<HtmlElement>();
+
+                        if let Ok(Some(func)) = Reflect::get(el, &"hidePopover".into())
+                            .map(|v| v.dyn_into::<Function>().ok())
+                        {
+                            let _ = func.call0(el);
+                        }
+                    }
+                } else {
+                    // reject entry -> prevent_default()
+                    ev.prevent_default();
+                }
+            }
+            "Escape" => {
+                reset_id();
+            }
+            _ => {}
+        }
+    };
+
+    let check_blur = move |_| {
+        // on blur, if valid, apply the ID
+        if valid_id.get() {
+            apply_id(&setup_id.get());
+        } else {
+            // reset to previous valid ID
+            reset_id();
+        }
+    };
+
+    Effect::new(reset_id);
+
     view! {
-        <div class="flex items-center gap-2">
-            <p class="text-base font-semibold mb-1">
-                "Setup ID: "<span class="text-primary" data-testid="setup-id">
-                    {move || setup_id.get().unwrap_or("No Setup ID".to_string())}
-                </span>
-            </p>
-            <div class="relative inline-block">
+        <div class="flex items-center gap-2 text-base font-semibold">
+            <label for="setup-id-input" class="whitespace-nowrap">
+                "Setup ID:"
+            </label>
+
+            <input
+                id="setup-id-input"
+                data-testid="setup-id"
+                aria-label="Setup ID Input"
+                class="font-mono bg-transparent border-none focus:outline-none w-auto min-w-0 max-w-[7ch] truncate transition-colors duration-200"
+                class:text-primary=move || valid_id.get()
+                class:text-red-500=move || !valid_id.get()
+                bind:value=setup_id
+                on:input=check_input
+                on:keydown=check_keydown
+                on:blur=check_blur
+                node_ref=input_ref
+            />
+
+            <div class="relative">
                 <button
                     on:click=move |_| copy_to_clipboard()
-                    class="ml-2 text-base leading-none transition duration-200 cursor-pointer"
+                    class="text-base leading-none transition duration-200 cursor-pointer"
                     aria-label="Copy to clipboard"
                 >
                     <span
@@ -173,6 +295,7 @@ pub fn SetUpId() -> impl IntoView {
                         "📋"
                     </span>
                 </button>
+
                 <div
                     class="absolute -top-7 left-1/2 -translate-x-1/2 z-50
                     text-base px-3 py-1 rounded shadow 

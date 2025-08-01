@@ -1,6 +1,6 @@
 import { test, expect } from "@playwright/test";
 
-test("Setup ID menu flow and clipboard copy", async ({ page }) => {
+test("Setup ID menu and clipboard copy", async ({ page }) => {
   await page.goto("http://localhost:3000/");
 
   // Open menu
@@ -10,14 +10,14 @@ test("Setup ID menu flow and clipboard copy", async ({ page }) => {
 
   // Check initial Setup ID is "No Setup ID"
   const setupIdSpan = page.getByTestId("setup-id");
-  await expect(setupIdSpan).toHaveText("No Setup ID");
+  await expect(setupIdSpan).toHaveValue("NoSetup");
 
   // Generate a setup
   await page.goto("http://localhost:3000/setup/2");
 
   // Setup ID should now be a valid 7-character hex string
-  await expect(setupIdSpan).not.toHaveText("No Setup ID");
-  const firstId = await setupIdSpan.textContent();
+  await expect(setupIdSpan).not.toHaveValue("NoSetup");
+  const firstId = await setupIdSpan.inputValue();
   expect(firstId).toMatch(/^[0-9A-F]{7}$/);
 
   // Generate a new setup
@@ -26,7 +26,7 @@ test("Setup ID menu flow and clipboard copy", async ({ page }) => {
   await reloadButton.click();
 
   // Setup ID should have changed
-  const secondId = await setupIdSpan.textContent();
+  const secondId = await setupIdSpan.inputValue();
   expect(secondId).not.toBe(firstId);
 
   // Open menu again

@@ -79,27 +79,3 @@ pub fn ThemeButton(theme_name: &'static str) -> impl IntoView {
         </li>
     }
 }
-
-pub fn provide_theme_context() {
-    let (theme, set_theme) = signal(None::<String>);
-    // beware that there is no type protection, if we do not wrap the signal in a user defined type!
-    provide_context(set_theme);
-    provide_context(theme);
-
-    Effect::new(move |_| {
-        if theme.get().is_none() {
-            if let Some(window) = web_sys::window() {
-                // theme is set in script in head to local_storage value or aqua as default value.
-                // this prevents flickering.
-                // here we only load theme from dom.
-                if let Some(theme_name) = window
-                    .document()
-                    .and_then(|doc| doc.document_element())
-                    .and_then(|el| el.get_attribute("data-theme"))
-                {
-                    set_theme.set(Some(theme_name));
-                }
-            }
-        }
-    });
-}
