@@ -22,7 +22,7 @@ test.describe('Theme selector', () => {
     });
 
     for (const theme of themes) {
-        test(`Selecting theme "${theme}" sets data-theme and updates button`, async ({ page }) => {
+        test(`Selecting theme "${theme}" sets data-theme and updates label`, async ({ page }) => {
             await page.goto('http://localhost:3000/');
 
             // open menu → find name of current theme and button "Thema wählen"
@@ -31,17 +31,20 @@ test.describe('Theme selector', () => {
 
             const themeTrigger = page.getByRole('button', { name: /Thema wählen/i });
             // make sure the button is there
-            await expect(themeTrigger).toHaveCount(1); 
+            await expect(themeTrigger).toHaveCount(1);
 
             await expect(themeTrigger).toBeVisible();
             await themeTrigger.click();
 
             // click theme label
             const label = page.locator(`label[data-theme="${theme}"]`);
+            // make sure the button is there
+            await expect(label).toHaveCount(1);
+
             await expect(label).toBeVisible();
             await label.click();
 
-            // check HTML attribut
+            // check HTML attribute
             const html = page.locator('html');
             await expect(html).toHaveAttribute('data-theme', theme);
 
