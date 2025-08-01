@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.5.0](https://github.com/DrFlowerkick/dh-amulets/compare/v0.4.2...v0.5.0) (2025-08-01)
+
+
+### Features
+
+* :sparkles: Implemented Hex ID for amulet setup ([93060e9](https://github.com/DrFlowerkick/dh-amulets/commit/93060e9203d03843cecd533d5189efeb26bde2ea))
+* Feat_setup_id ([#78](https://github.com/DrFlowerkick/dh-amulets/issues/78)) ([#80](https://github.com/DrFlowerkick/dh-amulets/issues/80)) ([93060e9](https://github.com/DrFlowerkick/dh-amulets/commit/93060e9203d03843cecd533d5189efeb26bde2ea))
+
 ## [0.4.2](https://github.com/DrFlowerkick/dh-amulets/compare/v0.4.1...v0.4.2) (2025-07-28)
 
 
