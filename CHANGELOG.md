@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.6.1](https://github.com/DrFlowerkick/dh-amulets/compare/v0.6.0...v0.6.1) (2025-08-04)
+
+
+### Bug Fixes
+
+* :recycle: refactoring input setup id by seperating input from shown setup id ([#85](https://github.com/DrFlowerkick/dh-amulets/issues/85)) ([b7ac3b2](https://github.com/DrFlowerkick/dh-amulets/commit/b7ac3b2aa51a858b0cb33c276c54f2ae04c9b1b2))
+
 ## [0.6.0](https://github.com/DrFlowerkick/dh-amulets/compare/v0.5.0...v0.6.0) (2025-08-01)
 
 
