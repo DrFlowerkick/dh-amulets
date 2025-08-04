@@ -1,4 +1,5 @@
 import { test, expect } from "@playwright/test";
+import { log } from "console";
 
 test("Setup ID menu and clipboard copy", async ({ page }) => {
   await page.goto("http://localhost:3000/");
@@ -8,16 +9,17 @@ test("Setup ID menu and clipboard copy", async ({ page }) => {
   await expect(menuButton).toBeVisible();
   await menuButton.click();
 
-  // Check initial Setup ID is "No Setup ID"
+  // Check initial Setup ID is "NoSetup"
   const setupIdSpan = page.getByTestId("setup-id");
-  await expect(setupIdSpan).toHaveValue("NoSetup");
+  await expect(setupIdSpan).toBeVisible();
+  await expect(setupIdSpan).toHaveText("NoSetup");
 
   // Generate a setup
   await page.goto("http://localhost:3000/setup/2");
 
   // Setup ID should now be a valid 7-character hex string
-  await expect(setupIdSpan).not.toHaveValue("NoSetup");
-  const firstId = await setupIdSpan.inputValue();
+  await expect(setupIdSpan).not.toHaveText("NoSetup");
+  const firstId = await setupIdSpan.textContent();
   expect(firstId).toMatch(/^[0-9A-F]{7}$/);
 
   // Generate a new setup
@@ -26,14 +28,19 @@ test("Setup ID menu and clipboard copy", async ({ page }) => {
   await reloadButton.click();
 
   // Setup ID should have changed
-  const secondId = await setupIdSpan.inputValue();
+  const secondId = await setupIdSpan.textContent();
   expect(secondId).not.toBe(firstId);
 
   // Open menu again
   await menuButton.click();
 
-  // Test clipboard copy (Chromium only)
+  // check buttons are visible
   const copyButton = page.getByRole("button", { name: "Copy to clipboard" });
+  await expect(copyButton).toBeVisible();
+  const editIdButton = page.getByTestId("switch-input-mode");
+  await expect(editIdButton).toBeVisible();
+
+  // Test clipboard copy
   await copyButton.click();
 
   // Check that the "✔Kopiert" message appears
