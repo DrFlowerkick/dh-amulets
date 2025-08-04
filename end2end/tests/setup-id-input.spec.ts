@@ -2,7 +2,7 @@ import { test, expect } from "@playwright/test";
 
 test.describe("Setup ID input behavior", () => {
   const validId = "4922889";
-  const expectedPlayers = 3;
+  const expectedNumPlayers = 3;
   const expectedLevel01 = "2x";
   const expectedLevel04 = "2x";
   const expectedLevel06 = "2x";
@@ -18,70 +18,99 @@ test.describe("Setup ID input behavior", () => {
     await menuButton.click();
   });
 
-  test("shows red border on invalid input", async ({ page }) => {
-    const input = page.getByLabel("Setup ID Input");
+  test("show input field for Setup ID and buttons", async ({ page }) => {
+    const editIdButton = page.getByTestId("switch-input-mode");
+    await editIdButton.click();
+
+    const input = page.getByTestId("input-setup-id");
+    await expect(input).toBeVisible();
+    await expect(input).toHaveAttribute("placeholder", "ID eingeben...");
+
+    const submitSetupId = page.getByTestId("submit-setup-id");
+    await expect(submitSetupId).toBeVisible();
+    await expect(submitSetupId).toHaveClass(/opacity-50/);
+    await expect(submitSetupId).toBeDisabled();
+
+    const cancelInputMode = page.getByTestId("cancel-input-mode");
+    await expect(cancelInputMode).toBeVisible();
+  });
+
+  test("show placeholder text of input if empty", async ({ page }) => {
+    const editIdButton = page.getByTestId("switch-input-mode");
+    await editIdButton.click();
+
+    const input = page.getByTestId("input-setup-id");
+    await expect(input).toBeVisible();
+    await expect(input).toHaveAttribute("placeholder", "ID eingeben...");
+
+    await input.fill("foo");
+    await expect(input).toHaveValue("foo");
+
+    await input.fill("");
+    await expect(input).toHaveValue("");
+    await expect(input).toHaveAttribute("placeholder", "ID eingeben...");
+  });
+
+  test("shows red text on invalid input", async ({ page }) => {
+    const editIdButton = page.getByTestId("switch-input-mode");
+    await editIdButton.click();
+
+    const input = page.getByTestId("input-setup-id");
     await input.fill("XYZ123!");
     await expect(input).toHaveValue("XYZ123!");
-    await input.blur();
     await expect(input).toHaveClass(/text-red-500/);
+
+    await input.fill("");
+    await expect(input).toHaveValue("");
+    await expect(input).toHaveClass(/text-primary/);
   });
 
-  test("Escape restores old value", async ({ page }) => {
-    const input = page.getByLabel("Setup ID Input");
-    const original = await input.inputValue();
+  test("Cancel does not change old Setup ID value", async ({ page }) => {
+    const setupId = page.getByTestId("setup-id");
+    const original = await setupId.textContent();
 
+    const editIdButton = page.getByTestId("switch-input-mode");
+    await editIdButton.click();
+
+    const input = page.getByTestId("input-setup-id");
     await input.fill("INVALID");
     await expect(input).toHaveValue("INVALID");
-    await input.press("Escape");
 
-    await expect(input).toHaveValue(original);
+    const cancelInputMode = page.getByTestId("cancel-input-mode");
+    await cancelInputMode.click();
+
+    await expect(setupId).toHaveText(original ?? "");
   });
 
-  test("Enter on invalid input does not submit and keeps value", async ({
-    page,
-  }) => {
-    const input = page.getByLabel("Setup ID Input");
-    const original = await input.inputValue();
+  test("Valid input enables submit button", async ({ page }) => {
+    const editIdButton = page.getByTestId("switch-input-mode");
+    await editIdButton.click();
 
-    await input.fill("!!!INVALID!!!");
-    await expect(input).toHaveValue("!!!INVALID!!!");
-    await input.press("Enter");
-
-    // Value stays unchanged (no restore, but also no navigation)
-    await expect(input).toHaveValue("!!!INVALID!!!");
-    await expect(page).toHaveURL(/\/$/); // URL should not change
-  });
-
-  test("Tab on invalid input restores original value", async ({ page }) => {
-    const input = page.getByLabel("Setup ID Input");
-    const original = await input.inputValue();
-
-    await input.fill("XXX_BAD_ID");
-    await expect(input).toHaveValue("XXX_BAD_ID");
-    await input.press("Tab");
-
-    await expect(input).toHaveValue(original);
-  });
-
-  test("Valid input + Enter updates URL and Setup", async ({
-    page,
-    browserName,
-  }) => {
-    //test.skip(browserName === "chromium", "Flaky in Chromium (SIGSEGV)");
-
-    const input = page.getByLabel("Setup ID Input");
-
+    const input = page.getByTestId("input-setup-id");
     await input.fill(validId);
     await expect(input).toHaveValue(validId);
-    if (browserName === "chromium") {
-      // Chromium will SIGSEGV if we use Enter here
-      await input.press("Tab");
-    } else {
-      await input.press("Enter");
-    }
+
+    const submitSetupId = page.getByTestId("submit-setup-id");
+    await expect(submitSetupId).not.toHaveClass(/opacity-50/);
+    await expect(submitSetupId).not.toBeDisabled();
+  });
+
+  test("Valid input + submit updates URL and Setup", async ({ page }) => {
+    const editIdButton = page.getByTestId("switch-input-mode");
+    await editIdButton.click();
+
+    const input = page.getByTestId("input-setup-id");
+    await input.fill(validId);
+    await expect(input).toHaveValue(validId);
+
+    const submitSetupId = page.getByTestId("submit-setup-id");
+    await submitSetupId.click();
+
+    // Check URL
+    await page.waitForURL(`**/setup/${expectedNumPlayers}`);
 
     const amuletLevel01 = page.getByTestId("current-level-01");
-    await amuletLevel01.waitFor({ timeout: 15000 });
+    await amuletLevel01.waitFor({ timeout: 100 }); // wait for rendering
     await expect(amuletLevel01).toHaveText(expectedLevel01);
     const amuletLevel04 = page.getByTestId("current-level-04");
     await expect(amuletLevel04).toHaveText(expectedLevel04);
@@ -97,5 +126,9 @@ test.describe("Setup ID input behavior", () => {
     await expect(amuletLevel16).toHaveText(expectedLevel16);
     const amuletLevel20 = page.getByTestId("current-level-20");
     await expect(amuletLevel20).toHaveText(expectedLevel20);
+
+    // menu should show Setup ID with new value
+    const setupIdSpan = page.getByTestId("setup-id");
+    await expect(setupIdSpan).toHaveText(validId);
   });
 });

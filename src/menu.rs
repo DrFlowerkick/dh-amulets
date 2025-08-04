@@ -6,10 +6,6 @@ use leptos::prelude::*;
 
 #[component]
 pub fn MenuButton() -> impl IntoView {
-    // use context to get the menu button reference
-    let menu_ref =
-        use_context::<NodeRef<leptos::html::Ul>>().expect("MenuUList: menu_ref context not found");
-
     view! {
         <div class="relative">
             // Hamburger button
@@ -29,9 +25,8 @@ pub fn MenuButton() -> impl IntoView {
             <ul
                 id="popover-menu"
                 popover
-                class="dropdown dropdown-end mt-2 menu rounded-box bg-base-100 shadow-md p-2 w-56"
+                class="dropdown dropdown-end mt-2 menu rounded-box bg-base-100 shadow-md p-2 w-56 overflow-x-hidden"
                 style="position-anchor:--anchor-menu"
-                node_ref=menu_ref
             >
                 <h3 class="text-lg font-semibold mb-1">"Menü"</h3>
                 <hr role="separator" class="my-2 border-t border-primary" />

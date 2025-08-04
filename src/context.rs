@@ -7,10 +7,6 @@ use leptos::prelude::*;
 pub struct InputIdSetup(pub bool);
 
 pub fn provide_app_context() {
-    // provide context for reference to menu button
-    let menu_ref: NodeRef<leptos::html::Ul> = NodeRef::new();
-    provide_context(menu_ref);
-
     // context of setup data
     let setup_data = RwSignal::new(None::<SetupData>);
     provide_context(setup_data);
